@@ -2,7 +2,7 @@
 
 ## Current milestone status: B. BLOCKED — Unity Editor validation required
 
-The rollback branch is pinned to **Unity 2022.3.62f1 LTS** with URP 14.0.11. The migration branch now contains a static Unity **6000.3.0f1 / URP 17.3.0** candidate, but it has not been opened, package-resolved, compiled or built by Unity 6.3. A static version edit is not a successful migration.
+The rollback branch is pinned to **Unity 2022.3.62f1 LTS** with URP 14.0.11. The migration branch targets the owner-confirmed Unity **6000.3.27f1 / URP 17.3.0** candidate, but it has not yet compiled or built successfully. A version edit by itself is not a successful migration.
 
 Do not report Safari/iPhone PASS from Unity 2022.3 or from the unvalidated migration branch. The next controlled step is to open `migration/unity-6.3-lts` with the latest patched Unity **6.3 LTS (`6000.3.x`)**, resolve packages and pass compile, Play Mode and regression checks without changing the 2022.3 baseline.
 

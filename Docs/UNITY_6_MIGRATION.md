@@ -8,7 +8,7 @@ The repository has a dedicated migration branch: `migration/unity-6.3-lts`.
 
 Static migration work completed on this branch:
 
-- changed the project marker from Unity 2022.3.62f1 to `6000.3.0f1`;
+- changed the project marker from Unity 2022.3.62f1 to the owner-confirmed Editor version `6000.3.27f1`;
 - changed URP from 14.0.11 to the 17.3.0 migration candidate;
 - added explicit UGUI 2.0.0 and updated Test Framework to 1.3.9;
 - replaced Unity APIs known to be obsolete across this migration boundary;
@@ -22,7 +22,7 @@ The request referenced 43 C# files. The actual migration checkout contains **39*
 
 This is not a confirmed Unity migration. The Codex cloud environment does not contain Unity 6.3, Web Build Support, Package Manager resolution results or a licensed build environment. Unity's release/package endpoints also returned HTTP 403 through the cloud proxy. Therefore:
 
-- `6000.3.0f1`, URP 17.3.0, Test Framework 1.3.9 and UGUI 2.0.0 are migration pins that the real Unity 6.3 Package Manager must resolve and validate;
+- URP 17.3.0, Test Framework 1.3.9 and UGUI 2.0.0 are migration pins that Unity 6.3.27f1 Package Manager must resolve and validate;
 - Project Settings serialization has not been upgraded by Unity;
 - URP assets have not been generated/imported;
 - C# has not been compiled against Unity 6.3 assemblies;
@@ -42,7 +42,7 @@ If Unity 6 import fails, close Unity and return to the 2022.3 branch in a separa
 
 | Area | Unity 2022.3 | Migration candidate | Reason |
 |---|---|---|---|
-| Editor | 2022.3.62f1 | 6000.3.0f1 | Dedicated Unity 6.3 LTS migration branch |
+| Editor | 2022.3.62f1 | 6000.3.27f1 | Owner-confirmed Unity 6.3 LTS editor |
 | URP | 14.0.11 | 17.3.0 | Unity 6.3-aligned SRP generation candidate |
 | UGUI | implicit/missing | 2.0.0 explicit | Runtime and Editor asmdefs reference `Unity.ugui` |
 | Test Framework | 1.1.33 | 1.3.9 | Unity 6-compatible candidate with existing NUnit tests |
@@ -125,7 +125,7 @@ The test asmdef still targets Editor only and references `IslandSurvival.Runtime
 ## Very simple next steps
 
 1. Install **Unity Hub**.
-2. In Unity Hub, install the latest patched **Unity 6.3 LTS** editor. Start with `6000.3.0f1` or a newer `6000.3.x` patch shown by Hub.
+2. In Unity Hub, install **Unity 6.3 LTS 6000.3.27f1**, matching `ProjectVersion.txt`.
 3. Add **Web Build Support**. On macOS, also add iOS Build Support; keep Android modules for compatibility.
 4. Make a fresh clone or a second clean checkout. Select branch `migration/unity-6.3-lts`.
 5. Open that folder with Unity 6.3. Do not open the rollback checkout.

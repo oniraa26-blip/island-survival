@@ -5,7 +5,7 @@ Status: architecture audit and safe foundation update. This document does **not*
 ## Version decision
 
 - Rollback baseline (`milestone/web-pwa-1`): **Unity 2022.3.62f1 LTS**, URP 14.0.11.
-- Static migration branch (`migration/unity-6.3-lts`): **Unity 6000.3.0f1**, URP 17.3.0 candidate; Editor validation is outstanding.
+- Static migration branch (`migration/unity-6.3-lts`): **Unity 6000.3.27f1**, URP 17.3.0 candidate; Editor validation is outstanding.
 - Recommended migration target: **Unity 6.3 LTS (`6000.3.x`)**, using the latest patched 6000.3 editor available when the migration spike begins.
 - Decision: migrate only on `migration/unity-6.3-lts`; never open-upgrade or rewrite the rollback branch.
 

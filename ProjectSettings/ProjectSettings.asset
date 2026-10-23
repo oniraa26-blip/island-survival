@@ -35,12 +35,20 @@ PlayerSettings:
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
   stripEngineCode: 1
-  managedStrippingLevel: 1
+  managedStrippingLevel:
+    Android: 1
+    Standalone: 1
+    WebGL: 1
+    iPhone: 1
   scriptingBackend:
     Android: 1
     Standalone: 0
     iPhone: 1
-  il2cppCompilerConfiguration: 0
+  il2cppCompilerConfiguration:
+    Android: 0
+    Standalone: 0
+    WebGL: 0
+    iPhone: 0
   allowUnsafeCode: 0
   useDeterministicCompilation: 1
   activeInputHandler: 0

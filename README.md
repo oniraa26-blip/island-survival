@@ -6,7 +6,7 @@ A touch-first, cross-platform mobile-landscape Unity vertical slice set on Origi
 
 ## Requirements
 
-- Unity **6.3 LTS migration candidate (`6000.3.0f1`)** on this branch; Unity Editor validation is still required
+- Unity **6.3 LTS (`6000.3.27f1`)** on this branch; Unity Editor validation is still required
 - URP 17.3.0 migration candidate (restored by Unity Package Manager from `Packages/manifest.json`)
 - Relevant Unity modules: iOS Build Support on macOS, WebGL Build Support, and Android SDK/NDK/OpenJDK for their respective builds
 

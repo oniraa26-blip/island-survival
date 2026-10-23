@@ -11,7 +11,7 @@ namespace IslandSurvival.Platform
             QualitySettings.vSyncCount = 0;
             QualitySettings.shadowDistance = profile.shadowDistance;
             QualitySettings.shadowResolution = profile.shadowResolution;
-            QualitySettings.shadows = ShadowQuality.All;
+            QualitySettings.shadows = UnityEngine.ShadowQuality.All;
             QualitySettings.softParticles = false;
             QualitySettings.lodBias = profile.lodBias;
             QualitySettings.globalTextureMipmapLimit = profile.textureMipmapLimit;
