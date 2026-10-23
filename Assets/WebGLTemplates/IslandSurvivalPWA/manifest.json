@@ -1,0 +1,11 @@
+{
+  "name": "Island Survival Prototype",
+  "short_name": "Island Survival",
+  "description": "Starting Beach mobile test build",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#123e46",
+  "theme_color": "#123e46"
+}

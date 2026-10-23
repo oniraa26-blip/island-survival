@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using UnityEditor;
-using UnityEditor.Build.Reporting;
 using UnityEngine;
 
 namespace IslandSurvival.Editor
@@ -33,19 +32,7 @@ namespace IslandSurvival.Editor
 
         public static void BuildAndroidDevelopment()
         {
-            Validate();
-            Directory.CreateDirectory("Builds/Android");
-            var options = new BuildPlayerOptions
-            {
-                scenes = new[] { ScenePath },
-                locationPathName = "Builds/Android/IslandSurvivalPrototype.apk",
-                target = BuildTarget.Android,
-                options = BuildOptions.Development
-            };
-            var report = BuildPipeline.BuildPlayer(options);
-            if (report.summary.result != BuildResult.Succeeded)
-                throw new InvalidOperationException("Android build failed: " + report.summary.result);
-            Debug.Log("Android build succeeded: " + report.summary.outputPath);
+            PlatformBuildProfiles.BuildAndroid();
         }
 
         static int RequireFile(string path)
@@ -55,7 +42,7 @@ namespace IslandSurvival.Editor
         }
         static int RequireLandscape()
         {
-            if (PlayerSettings.defaultInterfaceOrientation == UIOrientation.LandscapeLeft || PlayerSettings.defaultInterfaceOrientation == UIOrientation.LandscapeRight) return 0;
+            if ((PlayerSettings.defaultInterfaceOrientation == UIOrientation.LandscapeLeft || PlayerSettings.defaultInterfaceOrientation == UIOrientation.LandscapeRight || PlayerSettings.defaultInterfaceOrientation == UIOrientation.AutoRotation) && !PlayerSettings.allowedAutorotateToPortrait && !PlayerSettings.allowedAutorotateToPortraitUpsideDown) return 0;
             Debug.LogError("Default orientation must be landscape."); return 1;
         }
         static int RequireSceneInBuild()

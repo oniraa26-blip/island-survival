@@ -2,6 +2,8 @@
 
 Unity editor assumption: **Unity 2022.3.62f1 LTS**, URP 14.0.11. Automated tests are under `Assets/IslandSurvival/Tests/EditMode`.
 
+Cross-platform build and quality policy is documented separately in `PLATFORM_STRATEGY.md`. These gameplay acceptance tests remain unchanged.
+
 | # | Acceptance test | Status before Unity device/editor run | Evidence / manual check |
 |---|---|---|---|
 | 1 | Fresh launch reaches Starting Beach without blocking errors | NEEDS UNITY EDITOR TEST | Open `Prototype_StartingBeach`, enter Play Mode, check Console. Runtime bootstrap creates the slice. |

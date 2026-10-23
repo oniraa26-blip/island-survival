@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="theme-color" content="#123e46">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Island Survival">
+  <link rel="manifest" href="manifest.json">
+  <title>{{{ PRODUCT_NAME }}}</title>
+  <style>
+    html,body,#unity-container,#unity-canvas{width:100%;height:100%;margin:0;padding:0;overflow:hidden;background:#123e46;touch-action:none}
+    body{position:fixed;inset:0;font-family:system-ui,sans-serif;-webkit-user-select:none;user-select:none}
+    #unity-canvas{display:block;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);box-sizing:border-box}
+    #loading{position:fixed;inset:0;display:grid;place-items:center;color:white;background:#123e46;z-index:2}
+    #rotate{display:none;position:fixed;inset:0;place-items:center;text-align:center;color:white;background:#123e46;z-index:3;padding:2rem}
+    @media (orientation:portrait){#rotate{display:grid}#unity-container{visibility:hidden}}
+  </style>
+</head>
+<body>
+  <div id="unity-container"><canvas id="unity-canvas" tabindex="-1"></canvas></div>
+  <div id="loading">Loading Starting Beach…</div>
+  <div id="rotate">Rotate your iPhone to landscape to play.</div>
+  <script>
+    const canvas=document.querySelector('#unity-canvas');
+    const buildUrl='Build';
+    const config={
+      dataUrl:buildUrl+'/{{{ DATA_FILENAME }}}',
+      frameworkUrl:buildUrl+'/{{{ FRAMEWORK_FILENAME }}}',
+      codeUrl:buildUrl+'/{{{ CODE_FILENAME }}}',
+      streamingAssetsUrl:'StreamingAssets',
+      companyName:'{{{ COMPANY_NAME }}}',productName:'{{{ PRODUCT_NAME }}}',productVersion:'{{{ PRODUCT_VERSION }}}',
+      matchWebGLToCanvasSize:true,devicePixelRatio:Math.min(window.devicePixelRatio||1,2)
+    };
+    document.addEventListener('touchmove',event=>event.preventDefault(),{passive:false});
+    window.addEventListener('load',async()=>{if(screen.orientation&&screen.orientation.lock){try{await screen.orientation.lock('landscape')}catch(_){}}});
+    const loader=document.createElement('script');loader.src=buildUrl+'/{{{ LOADER_FILENAME }}}';
+    loader.onload=()=>createUnityInstance(canvas,config,progress=>{document.querySelector('#loading').textContent='Loading Starting Beach… '+Math.round(progress*100)+'%';})
+      .then(()=>document.querySelector('#loading').remove()).catch(message=>{document.querySelector('#loading').textContent=message;});
+    document.body.appendChild(loader);
+    if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js'));
+  </script>
+</body>
+</html>

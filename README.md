@@ -1,16 +1,16 @@
 # Island Survival — Prototype 0.1
 
-A touch-first, mobile-landscape Unity vertical slice set on Origin Island's Starting Beach. It implements the locked Prototype 0.1 loop:
+A touch-first, cross-platform mobile-landscape Unity vertical slice set on Origin Island's Starting Beach. iOS native is the primary target, Web/PWA is the mobile test target, and Android remains compatible. It implements the locked Prototype 0.1 loop:
 
 `Explore → Gather → Survive → Craft → Build → Sleep/Respawn → Continue`
 
 ## Requirements
 
-- Unity **2022.3.62f1 LTS** with Android Build Support for APK builds
+- Unity **2022.3.62f1 LTS** (current project version; do not open-upgrade in place)
 - URP 14.0.11 (restored by Unity Package Manager from `Packages/manifest.json`)
-- Android SDK/NDK/OpenJDK installed through Unity Hub for Android builds
+- Relevant Unity modules: iOS Build Support on macOS, WebGL Build Support, and Android SDK/NDK/OpenJDK for their respective builds
 
-The project contains no paid assets and does not require secrets or external services. Placeholder visuals are generated from simple primitives at runtime. On first editor import, `UrpProjectSetup` creates the local mobile URP renderer/pipeline assets and assigns them automatically.
+The project contains no paid assets and does not require secrets or external services. Placeholder visuals are generated from simple primitives at runtime. On first editor import, `UrpProjectSetup` creates the local mobile URP renderer/pipeline assets and assigns them automatically. Read [Docs/PLATFORM_STRATEGY.md](Docs/PLATFORM_STRATEGY.md) before any Unity 6 migration.
 
 ## Open and run
 
@@ -60,14 +60,15 @@ Project validation:
   -executeMethod IslandSurvival.Editor.PrototypeBuildTools.Validate -quit
 ```
 
-Android development build:
+Platform builds are also available from **Island Survival → Build**. Batch methods:
 
 ```bash
-/path/to/Unity -batchmode -nographics -projectPath . \
-  -executeMethod IslandSurvival.Editor.PrototypeBuildTools.BuildAndroidDevelopment -quit
+/path/to/Unity -batchmode -nographics -projectPath . -executeMethod IslandSurvival.Editor.PlatformBuildProfiles.BuildIOS -quit
+/path/to/Unity -batchmode -nographics -projectPath . -executeMethod IslandSurvival.Editor.PlatformBuildProfiles.BuildWebPWA -quit
+/path/to/Unity -batchmode -nographics -projectPath . -executeMethod IslandSurvival.Editor.PlatformBuildProfiles.BuildAndroid -quit
 ```
 
-The APK is written to `Builds/Android/IslandSurvivalPrototype.apk` (ignored by Git). See [Docs/ACCEPTANCE_TESTS.md](Docs/ACCEPTANCE_TESTS.md) for the complete test matrix and the checks that still require Unity, a device, or the Android toolchain.
+iOS exports to `Builds/iOS`, Web/PWA to `Builds/WebPWA`, and Android to `Builds/Android/IslandSurvivalPrototype.apk` (all ignored by Git). See [Docs/ACCEPTANCE_TESTS.md](Docs/ACCEPTANCE_TESTS.md) for the Prototype 0.1 matrix.
 
 ## Architecture
 
