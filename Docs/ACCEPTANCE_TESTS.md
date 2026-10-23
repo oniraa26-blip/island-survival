@@ -7,11 +7,11 @@ Unity editor assumption: **Unity 2022.3.62f1 LTS**, URP 14.0.11. Automated tests
 | 1 | Fresh launch reaches Starting Beach without blocking errors | NEEDS UNITY EDITOR TEST | Open `Prototype_StartingBeach`, enter Play Mode, check Console. Runtime bootstrap creates the slice. |
 | 2 | Touch movement and camera work simultaneously | NEEDS DEVICE TEST | Hold left dynamic joystick while dragging right-side empty space. |
 | 3 | Collect Stick/Stone/Coconut | NEEDS UNITY EDITOR TEST | Approach each pickup; context button must appear and add it. |
-| 4 | Inventory stacks and safely refuses overflow | PASS (automated model test) | `InventoryTests`. Also fill all 16 slots in Play Mode. |
-| 5 | Craft and equip Stone Axe | PASS (automated model tests); NEEDS UI TEST | Gather 2 Stone + Stick + Fiber, BAG → Craft Axe → Equip Axe. |
+| 4 | Inventory stacks and safely refuses overflow | NEEDS UNITY TEST | Automated coverage is authored in `InventoryTests`; also fill all 16 slots in Play Mode. |
+| 5 | Craft and equip Stone Axe | NEEDS UNITY TEST | Automated model coverage is authored; gather 2 Stone + Stick + Fiber, BAG → Craft Axe → Equip Axe. |
 | 6 | Tree cannot be chopped without equipped axe | PASS (code path); NEEDS UI TEST | Tree `CanInteract` requires `mainHand == stone_axe`; verify no Chop button before equip. |
 | 7 | Equipped axe harvests Wood | NEEDS UNITY EDITOR TEST | Equip axe, chop a test palm three times; Wood x4 is awarded. |
-| 8 | Hunger/Thirst/Stamina visibly change | PASS (model test); NEEDS VISUAL TEST | Sprint and watch upper-left compact HUD. |
+| 8 | Hunger/Thirst/Stamina visibly change | NEEDS UNITY TEST | Automated model coverage is authored; sprint and watch upper-left compact HUD. |
 | 9 | Coconut affects survival state | PASS (code path); NEEDS UI TEST | BAG → Eat Coconut; Hunger +10, Thirst +15. |
 | 10 | Campfire only places on valid ground | NEEDS UNITY EDITOR TEST | BAG → Place Fire; invalid preview is red and cannot confirm. |
 | 11 | Leaf Bed places and sets respawn | NEEDS UNITY EDITOR TEST | Place Bed, interact; time advances to morning and save occurs. |
@@ -22,7 +22,7 @@ Unity editor assumption: **Unity 2022.3.62f1 LTS**, URP 14.0.11. Automated tests
 | 16 | No essential workflow requires keyboard/mouse | NEEDS DEVICE TEST | Complete entire loop using touch controls only. |
 | 17 | Android build has no editor-only runtime dependency | PASS (static separation); NEEDS ANDROID BUILD | Run the documented Android batch build. |
 
-`PASS` is used only where a runnable automated/static check exists in this checkout. Items requiring Unity rendering, touch hardware, Play Mode, or Android toolchains remain explicitly unclaimed until run.
+`PASS` is used only for checks completed in the current cloud machine. Unity is not installed in that machine, so authored Unity tests are explicitly unclaimed until they execute in the Editor or batch runner. Rendering, touch hardware, Play Mode, and Android checks likewise remain unclaimed.
 
 ## Prototype assumptions
 
