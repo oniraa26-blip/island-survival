@@ -6,11 +6,11 @@ A touch-first, cross-platform mobile-landscape Unity vertical slice set on Origi
 
 ## Requirements
 
-- Unity **2022.3.62f1 LTS** (current project version; do not open-upgrade in place)
-- URP 14.0.11 (restored by Unity Package Manager from `Packages/manifest.json`)
+- Unity **6.3 LTS migration candidate (`6000.3.0f1`)** on this branch; Unity Editor validation is still required
+- URP 17.3.0 migration candidate (restored by Unity Package Manager from `Packages/manifest.json`)
 - Relevant Unity modules: iOS Build Support on macOS, WebGL Build Support, and Android SDK/NDK/OpenJDK for their respective builds
 
-The project contains no paid assets and does not require secrets or external services. Placeholder visuals are generated from simple primitives at runtime. On first editor import, `UrpProjectSetup` creates the local mobile URP renderer/pipeline assets and assigns them automatically. Read [Docs/PLATFORM_STRATEGY.md](Docs/PLATFORM_STRATEGY.md) before any Unity 6 migration and [Docs/WEB_DEPLOYMENT.md](Docs/WEB_DEPLOYMENT.md) for the current Web milestone status and owner workflow.
+The project contains no paid assets and does not require secrets or external services. Placeholder visuals are generated from simple primitives at runtime. On first editor import, `UrpProjectSetup` creates the local mobile URP renderer/pipeline assets and assigns them automatically. The rollback baseline remains on `milestone/web-pwa-1` at Unity 2022.3. Read [Docs/UNITY_6_MIGRATION.md](Docs/UNITY_6_MIGRATION.md) before opening this branch and [Docs/WEB_DEPLOYMENT.md](Docs/WEB_DEPLOYMENT.md) for the Web owner workflow.
 
 ## Open and run
 

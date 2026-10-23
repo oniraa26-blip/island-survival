@@ -1,10 +1,10 @@
 # Web/PWA Deployment — Starting Beach
 
-## Current milestone status: B. BLOCKED
+## Current milestone status: B. BLOCKED — Unity Editor validation required
 
-The repository is pinned to **Unity 2022.3.62f1 LTS** (`ProjectSettings/ProjectVersion.txt`) with URP 14.0.11. That editor line can produce a WebGL player, but it is not an acceptable reliability baseline for the required iPhone Safari/mobile-Web milestone. A build that happens to open on one phone would not establish supported, repeatable Safari behavior.
+The rollback branch is pinned to **Unity 2022.3.62f1 LTS** with URP 14.0.11. The migration branch now contains a static Unity **6000.3.0f1 / URP 17.3.0** candidate, but it has not been opened, package-resolved, compiled or built by Unity 6.3. A static version edit is not a successful migration.
 
-Do not report Safari/iPhone PASS from Unity 2022.3. The next controlled step is a Unity **6.3 LTS (`6000.3.x`) migration spike**, using the latest patched 6.3 editor after confirming Unity's current browser support matrix. The migration must occur on its own branch and must pass compile, Play Mode and regression checks before replacing the 2022.3 baseline.
+Do not report Safari/iPhone PASS from Unity 2022.3 or from the unvalidated migration branch. The next controlled step is to open `migration/unity-6.3-lts` with the latest patched Unity **6.3 LTS (`6000.3.x`)**, resolve packages and pass compile, Play Mode and regression checks without changing the 2022.3 baseline.
 
 The Codex cloud machine has no Unity Editor, Web Build Support module or browser/device lab. It therefore cannot generate or run the real `Builds/WebPWA` output. Everything below describes the exact owner/build-machine workflow after the migration branch compiles.
 

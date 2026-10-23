@@ -4,9 +4,10 @@ Status: architecture audit and safe foundation update. This document does **not*
 
 ## Version decision
 
-- Current project: **Unity 2022.3.62f1 LTS**, URP 14.0.11.
+- Rollback baseline (`milestone/web-pwa-1`): **Unity 2022.3.62f1 LTS**, URP 14.0.11.
+- Static migration branch (`migration/unity-6.3-lts`): **Unity 6000.3.0f1**, URP 17.3.0 candidate; Editor validation is outstanding.
 - Recommended migration target: **Unity 6.3 LTS (`6000.3.x`)**, using the latest patched 6000.3 editor available when the migration spike begins.
-- Decision now: **do not upgrade the project in place**. `ProjectVersion.txt` remains 2022.3.62f1.
+- Decision: migrate only on `migration/unity-6.3-lts`; never open-upgrade or rewrite the rollback branch.
 
 Unity 6.3 LTS is the preferred target because it is a newer long-term-support line than Unity 6.0 and is the appropriate place to evaluate Unity's improved mobile web runtime, current Safari compatibility, build profiles, URP/SRP performance fixes, and current Apple/Android toolchains. The exact editor patch and current Unity support matrix must be reconfirmed before migration. The Codex cloud proxy returned HTTP 403 for Unity's documentation sites during this audit, so no claim here substitutes for that release-note check.
 
