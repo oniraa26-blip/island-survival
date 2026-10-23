@@ -19,7 +19,7 @@ namespace IslandSurvival.Save
     [Serializable] public sealed class PlacedData { public string id, persistentId; public TransformData transform; }
     [Serializable] public sealed class PrototypeSaveData
     {
-        public int version = 1;
+        public int version = 2;
         public TransformData player = new TransformData();
         public bool hasRespawn;
         public TransformData respawn = new TransformData();
@@ -28,6 +28,8 @@ namespace IslandSurvival.Save
         public SurvivalSnapshot survival = new SurvivalSnapshot();
         public float timeOfDay;
         public List<PlacedData> placed = new List<PlacedData>();
+        public List<string> discoveries = new List<string>();
+        public List<string> collectibles = new List<string>();
     }
 
     public sealed class SaveSystem
@@ -37,13 +39,14 @@ namespace IslandSurvival.Save
         Vector3 respawn;
         bool hasRespawn;
         public SaveSystem(ISaveStore store, Vector3 defaultSpawn) { this.store = store; this.defaultSpawn = defaultSpawn; }
+        public static bool IsSupportedVersion(int version) { return version == 1 || version == 2; }
         public void SetRespawn(Vector3 position) { respawn = position; hasRespawn = true; }
         public Vector3 RespawnPosition { get { return hasRespawn ? respawn : defaultSpawn; } }
         public void RespawnPlayer() { ServiceRegistry.Player.Teleport(RespawnPosition, Quaternion.identity); ServiceRegistry.Survival.Revive(); }
         public void SaveNow()
         {
             if (ServiceRegistry.Player == null) return;
-            var data = new PrototypeSaveData();
+            var data = new PrototypeSaveData { version = 2 };
             data.player = new TransformData(ServiceRegistry.Player.transform.position, ServiceRegistry.Player.transform.rotation);
             data.hasRespawn = hasRespawn; data.respawn = new TransformData(RespawnPosition, Quaternion.identity);
             foreach (var slot in ServiceRegistry.Inventory.Slots) data.inventory.Add(new InventorySlot(slot.itemId, slot.quantity));
@@ -51,6 +54,8 @@ namespace IslandSurvival.Save
             data.survival = ServiceRegistry.Survival.Snapshot(); data.timeOfDay = ServiceRegistry.Time.normalizedTime;
             foreach (var placed in ServiceRegistry.Building.Placed)
                 data.placed.Add(new PlacedData { id = placed.buildableId, persistentId = placed.persistentId, transform = new TransformData(placed.transform.position, placed.transform.rotation) });
+            foreach (var discovery in ServiceRegistry.Discovery.DiscoveredIds) data.discoveries.Add(discovery);
+            foreach (var collectible in ServiceRegistry.Discovery.CollectedIds) data.collectibles.Add(collectible);
             store.Write(JsonUtility.ToJson(data, true));
         }
         public bool Load()
@@ -60,13 +65,16 @@ namespace IslandSurvival.Save
             PrototypeSaveData data;
             try { data = JsonUtility.FromJson<PrototypeSaveData>(json); }
             catch (Exception e) { Debug.LogWarning("Save ignored: " + e.Message); return false; }
-            if (data == null || data.version != 1) return false;
-            ServiceRegistry.Inventory.Replace(data.inventory); ServiceRegistry.Equipment.Restore(data.mainHand);
+            if (data == null || !IsSupportedVersion(data.version)) return false;
+            ServiceRegistry.Inventory.Replace(data.inventory ?? new List<InventorySlot>()); ServiceRegistry.Equipment.Restore(data.mainHand ?? string.Empty);
             ServiceRegistry.Survival.RestoreSnapshot(data.survival); ServiceRegistry.Time.Restore(data.timeOfDay);
             hasRespawn = data.hasRespawn; if (hasRespawn) respawn = data.respawn.Position;
             ServiceRegistry.Player.Teleport(data.player.Position, data.player.Rotation);
             ServiceRegistry.Building.ClearPlaced();
-            foreach (var placed in data.placed) ServiceRegistry.Building.Restore(placed.id, placed.persistentId, placed.transform.Position, placed.transform.Rotation);
+            if (data.placed != null)
+                foreach (var placed in data.placed)
+                    if (placed != null && placed.transform != null) ServiceRegistry.Building.Restore(placed.id, placed.persistentId, placed.transform.Position, placed.transform.Rotation);
+            ServiceRegistry.Discovery.Restore(data.discoveries, data.collectibles);
             return true;
         }
     }

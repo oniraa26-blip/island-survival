@@ -23,6 +23,7 @@ namespace IslandSurvival.Items
             var knife = new ItemDefinition("stone_knife", "item.stone_knife.name", "item.stone_knife.description", ItemCategory.Tool, false);
             knife.equippable = true;
             Add(knife);
+            Add(new ItemDefinition("blue_crystal_fragment", "item.blue_crystal_fragment.name", "item.blue_crystal_fragment.description", ItemCategory.Resource, false));
         }
 
         void Add(ItemDefinition definition) { definitions.Add(definition.id, definition); }

@@ -2,6 +2,7 @@ using IslandSurvival.Building;
 using IslandSurvival.CameraSystem;
 using IslandSurvival.Crafting;
 using IslandSurvival.Equipment;
+using IslandSurvival.Exploration;
 using IslandSurvival.InputSystem;
 using IslandSurvival.Interaction;
 using IslandSurvival.Inventory;
@@ -45,24 +46,27 @@ namespace IslandSurvival.Core
             ServiceRegistry.Items = new ItemDatabase();
             ServiceRegistry.Inventory = new InventoryModel(ServiceRegistry.Items, 16);
             ServiceRegistry.Equipment = new EquipmentModel(ServiceRegistry.Inventory, ServiceRegistry.Items);
+            ServiceRegistry.Discovery = new DiscoverySystem();
             ServiceRegistry.Survival = new SurvivalModel(ServiceRegistry.Tuning);
             BuildRuntime();
         }
 
         void BuildRuntime()
         {
-            WorldFactory.CreateStartingBeach(ServiceRegistry.Platform);
+            var demoWorld = WorldFactory.CreateStartingBeach(ServiceRegistry.Platform);
             var sunObject = new GameObject("Sun"); var sun = sunObject.AddComponent<Light>(); sun.type = LightType.Directional; sun.shadows = ServiceRegistry.Platform.useSoftShadows ? LightShadows.Soft : LightShadows.Hard;
             var time = new GameObject("TimeOfDay").AddComponent<TimeOfDayController>(); time.Initialize(sun, ServiceRegistry.Tuning); ServiceRegistry.Time = time;
 
             var input = new GameObject("MobileInput").AddComponent<MobileInput>();
             var playerObject = new GameObject("Player"); playerObject.tag = "Player"; playerObject.layer = 2; playerObject.transform.position = new Vector3(0f, 1.2f, 0f);
             var controller = playerObject.AddComponent<CharacterController>(); controller.height = 1.8f; controller.radius = 0.38f; controller.center = new Vector3(0f, 0.9f, 0f);
-            var body = WorldFactory.Primitive("PlayerVisual", PrimitiveType.Capsule, playerObject.transform.position, new Vector3(0.72f, 0.9f, 0.72f), new Color(0.95f, 0.5f, 0.18f), playerObject.transform); body.layer = 2; body.transform.localPosition = Vector3.up * 0.9f; Destroy(body.GetComponent<Collider>());
+            WorldFactory.CreatePlayerVisualRoot(playerObject.transform);
             var cameraObject = new GameObject("Main Camera"); cameraObject.tag = "MainCamera"; var camera = cameraObject.AddComponent<UnityEngine.Camera>(); camera.nearClipPlane = 0.15f; camera.farClipPlane = 250f;
+            camera.clearFlags = CameraClearFlags.SolidColor; camera.backgroundColor = new Color(0.43f, 0.73f, 0.82f);
             PlatformQualityController.Apply(ServiceRegistry.Platform, camera);
             var cameraFollow = cameraObject.AddComponent<ThirdPersonCamera>(); cameraFollow.Initialize(playerObject.transform, input, ServiceRegistry.Tuning);
             var player = playerObject.AddComponent<PlayerController>(); player.Initialize(input, camera, ServiceRegistry.Tuning, ServiceRegistry.Survival); ServiceRegistry.Player = player;
+            demoWorld.BindPlayer(playerObject.transform);
             var interactor = playerObject.AddComponent<PlayerInteractor>(); interactor.Initialize(input, ServiceRegistry.Tuning.interactionRadius);
 
             var building = new GameObject("BuildSystem").AddComponent<BuildSystem>(); building.Initialize(ServiceRegistry.Inventory, camera); ServiceRegistry.Building = building;

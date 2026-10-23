@@ -60,6 +60,7 @@
     { "key": "interaction.sleep_respawn", "value": "Ngủ / đặt điểm hồi sinh" },
     { "key": "interaction.inspect_campfire", "value": "Kiểm tra lửa trại" },
     { "key": "interaction.collect", "value": "Thu" },
+    { "key": "interaction.collect_item", "value": "Thu {0}" },
     { "key": "interaction.open", "value": "Mở" },
     { "key": "interaction.close", "value": "Đóng" },
     { "key": "toast.no_coconut", "value": "Không có dừa" },
@@ -77,6 +78,17 @@
     { "key": "goal.gather_sticks_stones", "value": "Thu thập cành cây và đá" },
     { "key": "goal.craft_stone_axe", "value": "Chế tạo Rìu Đá" },
     { "key": "goal.build_campfire", "value": "Dựng Lửa Trại" },
-    { "key": "goal.build_leaf_bed", "value": "Dựng Giường Lá" }
+    { "key": "goal.build_leaf_bed", "value": "Dựng Giường Lá" },
+    { "key": "discovery.found", "value": "Đã khám phá: {0}" },
+    { "key": "location.starting_beach", "value": "Bãi Biển Khởi Đầu" },
+    { "key": "location.freshwater_stream", "value": "Suối Nước Ngọt" },
+    { "key": "location.giant_tree", "value": "Đại Thụ" },
+    { "key": "location.blue_lagoon", "value": "Hồ Xanh" },
+    { "key": "location.twin_falls", "value": "Thác Đôi" },
+    { "key": "location.flower_valley", "value": "Thung Lũng Hoa" },
+    { "key": "location.split_rock", "value": "Đá Chẻ" },
+    { "key": "location.sea_cave", "value": "Hang Biển" },
+    { "key": "item.blue_crystal_fragment.name", "value": "Mảnh Tinh Thể Xanh" },
+    { "key": "item.blue_crystal_fragment.description", "value": "Một mảnh tinh thể kỳ lạ. Nó phát ra ánh sáng rất yếu." }
   ]
 }

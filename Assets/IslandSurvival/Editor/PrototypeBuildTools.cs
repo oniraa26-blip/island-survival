@@ -27,6 +27,7 @@ namespace IslandSurvival.Editor
             failures += RequireFile("Assets/WebGLTemplates/IslandSurvivalPWA/icon.svg");
             failures += RequireSingleUrpGlobalSettings();
             failures += LocalizationCatalogValidator.ValidateResources();
+            failures += OriginDemoValidator.Validate();
             if (failures > 0) throw new InvalidOperationException("Prototype validation failed with " + failures + " issue(s). See Console.");
             Debug.Log("Prototype 0.1 project validation passed.");
         }

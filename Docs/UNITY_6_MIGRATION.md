@@ -88,7 +88,7 @@ These use stable C# collections, Unity math/physics, CharacterController and Mon
 - `Platform/PlatformProfile.cs`: `UNITY_WEBGL`, `UNITY_IOS` and `UNITY_ANDROID` branches remain isolated from gameplay.
 - `Platform/PlatformQualityController.cs`: mip-limit API migrated; URP 17 property behavior must compile and be profiled.
 - `Save/SaveStore.cs`: Web continues to use `PlayerPrefs`/IndexedDB, native platforms use a file store.
-- `Save/SaveSystem.cs`: JSON schema remains version 1; no save reset was introduced.
+- `Save/SaveSystem.cs`: Origin Web Demo 0.3 writes schema version 2 for discoveries and collectibles, while version 1 saves remain loadable; no forced save reset was introduced.
 - `Streaming/WorldLayerContracts.cs`, `Streaming/ZoneStreamingService.cs`: additive async scene APIs remain, but only Starting Beach is included for this milestone.
 - `World/WorldFactory.cs`: requests `Universal Render Pipeline/Lit`, uses instanced materials and LOD; shader discovery/stripping must be checked in a Web build.
 

@@ -4,6 +4,8 @@ A touch-first, cross-platform mobile-landscape Unity vertical slice set on Origi
 
 `Explore → Gather → Survive → Craft → Build → Sleep/Respawn → Continue`
 
+The current migration branch also contains the procedural **Origin Island Web Demo 0.3** playground: eight southern/central exploration zones, lightweight runtime zone activation, localized discoveries, and one saved mystery collectible. It remains prototype art. See [Docs/ORIGIN_WEB_DEMO_03.md](Docs/ORIGIN_WEB_DEMO_03.md) for scope and validation.
+
 ## Requirements
 
 - Unity **6.3 LTS (`6000.3.27f1`)** on this branch; Unity Editor validation is still required
@@ -77,7 +79,7 @@ iOS exports to `Builds/iOS`, Web/PWA to `Builds/WebPWA`, and Android to `Builds/
 
 Runtime code is split into narrow domains under `Assets/IslandSurvival`: Core, Input, Player, Camera, Interaction, Items, Inventory, Equipment, Gathering, Crafting, Building, Survival, Time, Save, UI, and World. `ServiceRegistry` is wiring only; behavior remains in each domain. Items and recipes use definitions/models rather than per-item switch statements.
 
-Save data is local JSON (`prototype_0_1_save.json`), starts at schema version 1, and preserves player transform, respawn, inventory, main-hand equipment, survival state, time, and placed camp objects.
+Save data is local JSON (`prototype_0_1_save.json`). Origin Web Demo 0.3 writes schema version 2 while retaining version 1 load compatibility; it preserves player transform, respawn, inventory, main-hand equipment, survival state, time, placed camp objects, discoveries, and the mystery collectible state.
 
 ## Localization
 

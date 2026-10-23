@@ -60,6 +60,7 @@
     { "key": "interaction.sleep_respawn", "value": "Sleep / set respawn" },
     { "key": "interaction.inspect_campfire", "value": "Inspect campfire" },
     { "key": "interaction.collect", "value": "Collect" },
+    { "key": "interaction.collect_item", "value": "Collect {0}" },
     { "key": "interaction.open", "value": "Open" },
     { "key": "interaction.close", "value": "Close" },
     { "key": "toast.no_coconut", "value": "No coconut" },
@@ -77,6 +78,17 @@
     { "key": "goal.gather_sticks_stones", "value": "Gather sticks and stones" },
     { "key": "goal.craft_stone_axe", "value": "Craft a Stone Axe" },
     { "key": "goal.build_campfire", "value": "Build a Campfire" },
-    { "key": "goal.build_leaf_bed", "value": "Build a Leaf Bed" }
+    { "key": "goal.build_leaf_bed", "value": "Build a Leaf Bed" },
+    { "key": "discovery.found", "value": "Discovered: {0}" },
+    { "key": "location.starting_beach", "value": "Starting Beach" },
+    { "key": "location.freshwater_stream", "value": "Freshwater Stream" },
+    { "key": "location.giant_tree", "value": "Giant Tree" },
+    { "key": "location.blue_lagoon", "value": "Blue Lagoon" },
+    { "key": "location.twin_falls", "value": "Twin Falls" },
+    { "key": "location.flower_valley", "value": "Flower Valley" },
+    { "key": "location.split_rock", "value": "Split Rock" },
+    { "key": "location.sea_cave", "value": "Sea Cave" },
+    { "key": "item.blue_crystal_fragment.name", "value": "Blue Crystal Fragment" },
+    { "key": "item.blue_crystal_fragment.description", "value": "A strange crystal fragment emitting a faint glow." }
   ]
 }

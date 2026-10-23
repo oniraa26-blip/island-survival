@@ -31,6 +31,7 @@ namespace IslandSurvival.UI
             Build(); ApplySafeArea();
             interactor.TargetChanged += TargetChanged; ServiceRegistry.Inventory.Changed += RefreshInventory;
             ServiceRegistry.Building.Status += ShowToast; ServiceRegistry.Localization.LanguageChanged += RefreshLocalizedText;
+            ServiceRegistry.Discovery.Discovered += ShowDiscovery;
             RefreshLocalizedText();
         }
         void Build()
@@ -47,7 +48,7 @@ namespace IslandSurvival.UI
             context = Button("Context", safeArea, "ui.interact", new Vector2(-245, 95), new Vector2(220, 105), interactor.TriggerCurrent); Anchor(context.GetComponent<RectTransform>(), new Vector2(1f, 0f), new Vector2(1f, 0f)); localizedLabels.Remove(context.GetComponentInChildren<Text>()); context.gameObject.SetActive(false);
             var sprint = Button("Sprint", safeArea, "ui.run", new Vector2(-300, 225), new Vector2(130, 78), null); Anchor(sprint.GetComponent<RectTransform>(), new Vector2(1f, 0f), new Vector2(1f, 0f)); AddHold(sprint, input.SetSprintButton);
             var jump = Button("Jump", safeArea, "ui.jump", new Vector2(-145, 225), new Vector2(130, 78), input.RequestJump); Anchor(jump.GetComponent<RectTransform>(), new Vector2(1f, 0f), new Vector2(1f, 0f));
-            toast = Label("Toast", safeArea, "", 28, TextAnchor.MiddleCenter, new Vector2(-330, 120), new Vector2(660, 72)); Anchor(toast.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f));
+            toast = Label("Toast", safeArea, "", 28, TextAnchor.MiddleCenter, new Vector2(-330, -115), new Vector2(660, 72)); Anchor(toast.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
             inventoryPanel = Panel("InventoryPanel", safeArea, new Color(0.035f, 0.08f, 0.09f, 0.94f), new Vector2(0.61f, 0.1f), new Vector2(0.98f, 0.9f)); inventoryPanel.SetActive(false);
             inventoryText = Label("Slots", inventoryPanel.transform, "", 25, TextAnchor.UpperLeft, new Vector2(24, -68), new Vector2(-48, -210)); Stretch(inventoryText.rectTransform);
             LocalizedLabel("Title", inventoryPanel.transform, "ui.inventory_title", 31, TextAnchor.UpperLeft, new Vector2(24, -18), new Vector2(-48, 50));
@@ -106,7 +107,8 @@ namespace IslandSurvival.UI
         void StartBuild(string id) { inventoryPanel.SetActive(false); ServiceRegistry.Building.Begin(id); buildControls.SetActive(ServiceRegistry.Building.IsPlacing); }
         void CancelBuild() { ServiceRegistry.Building.Cancel(); buildControls.SetActive(false); }
         void ShowToast(string message) { toast.text = message; toastUntil = UnityEngine.Time.unscaledTime + 3f; if (!ServiceRegistry.Building.IsPlacing && buildControls != null) buildControls.SetActive(false); }
-        void OnDestroy() { if (ServiceRegistry.Localization != null) ServiceRegistry.Localization.LanguageChanged -= RefreshLocalizedText; }
+        void ShowDiscovery(string id) { ShowToast(ServiceRegistry.Localization.Format("discovery.found", ServiceRegistry.Localization.Get("location." + id))); }
+        void OnDestroy() { if (ServiceRegistry.Localization != null) ServiceRegistry.Localization.LanguageChanged -= RefreshLocalizedText; if (ServiceRegistry.Discovery != null) ServiceRegistry.Discovery.Discovered -= ShowDiscovery; }
         void ApplySafeArea() { var area = Screen.safeArea; safeArea.anchorMin = area.position / new Vector2(Screen.width, Screen.height); safeArea.anchorMax = (area.position + area.size) / new Vector2(Screen.width, Screen.height); safeArea.offsetMin = safeArea.offsetMax = Vector2.zero; lastSafeArea = area; lastScreenSize = new Vector2Int(Screen.width, Screen.height); }
         GameObject Panel(string name, Transform parent, Color color, Vector2 min, Vector2 max) { var obj = new GameObject(name, typeof(RectTransform), typeof(Image)); obj.transform.SetParent(parent, false); var rt = obj.GetComponent<RectTransform>(); rt.anchorMin = min; rt.anchorMax = max; rt.offsetMin = rt.offsetMax = Vector2.zero; obj.GetComponent<Image>().color = color; return obj; }
         Text Label(string name, Transform parent, string value, int size, TextAnchor alignment, Vector2 position, Vector2 dimensions) { var obj = new GameObject(name, typeof(RectTransform), typeof(Text)); obj.transform.SetParent(parent, false); var text = obj.GetComponent<Text>(); text.font = font; text.fontSize = size; text.color = Color.white; text.alignment = alignment; text.text = value; var rt = text.rectTransform; rt.anchorMin = rt.anchorMax = new Vector2(0, 1); rt.pivot = new Vector2(0, 1); rt.anchoredPosition = position; rt.sizeDelta = dimensions; return text; }

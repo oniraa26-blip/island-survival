@@ -50,6 +50,7 @@ namespace IslandSurvival.Building
             var ray = viewCamera.ScreenPointToRay(new Vector3(Screen.width * 0.5f, Screen.height * 0.42f));
             RaycastHit hit;
             valid = Physics.Raycast(ray, out hit, 30f, ~0, QueryTriggerInteraction.Ignore) && Vector3.Angle(hit.normal, Vector3.up) < 22f;
+            if (valid && LandmarkProtectionVolume.Contains(hit.point)) valid = false;
             if (valid)
             {
                 ghost.transform.SetPositionAndRotation(hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal) * Quaternion.Euler(0f, rotation, 0f));

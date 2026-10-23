@@ -26,8 +26,8 @@ namespace IslandSurvival.Core
         public float maxHunger = 100f;
         public float maxThirst = 100f;
         public float maxStamina = 100f;
-        public float hungerLossPerMinute = 2f;
-        public float thirstLossPerMinute = 3f;
+        public float hungerLossPerMinute = 1.2f;
+        public float thirstLossPerMinute = 1.8f;
         public float sprintStaminaPerSecond = 14f;
         public float staminaRegenPerSecond = 20f;
         public float staminaRegenDelay = 1.25f;

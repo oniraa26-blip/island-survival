@@ -1,5 +1,6 @@
 using IslandSurvival.Building;
 using IslandSurvival.Equipment;
+using IslandSurvival.Exploration;
 using IslandSurvival.Inventory;
 using IslandSurvival.Items;
 using IslandSurvival.Localization;
@@ -20,6 +21,7 @@ namespace IslandSurvival.Core
         public static LocalizationService Localization { get; internal set; }
         public static InventoryModel Inventory { get; internal set; }
         public static EquipmentModel Equipment { get; internal set; }
+        public static DiscoverySystem Discovery { get; internal set; }
         public static SurvivalModel Survival { get; internal set; }
         public static PlayerController Player { get; internal set; }
         public static BuildSystem Building { get; internal set; }
@@ -29,7 +31,7 @@ namespace IslandSurvival.Core
 
         public static void Reset()
         {
-            Tuning = null; Platform = null; Items = null; Localization = null; Inventory = null; Equipment = null;
+            Tuning = null; Platform = null; Items = null; Localization = null; Inventory = null; Equipment = null; Discovery = null;
             Survival = null; Player = null; Building = null; Time = null; Save = null; Zones = null;
         }
     }
