@@ -16,6 +16,7 @@ namespace IslandSurvival.InputSystem
         int lookFinger = -1;
         Vector3 lastMousePosition;
         bool sprintButtonHeld;
+        bool jumpQueued;
         const float JoystickRadius = 90f;
 
         void Update()
@@ -37,6 +38,7 @@ namespace IslandSurvival.InputSystem
             lastMousePosition = UnityEngine.Input.mousePosition;
             SprintHeld = UnityEngine.Input.GetKey(KeyCode.LeftShift) || sprintButtonHeld;
             if (UnityEngine.Input.GetKeyDown(KeyCode.E)) InteractPressed = true;
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Space)) RequestJump();
 #endif
         }
 
@@ -46,6 +48,17 @@ namespace IslandSurvival.InputSystem
         }
 
         public void SetSprintButton(bool held) { sprintButtonHeld = held; }
+
+        // Keyboard and touch UI both feed this action queue. The player consumes
+        // it once, so holding a control cannot repeatedly trigger a jump.
+        public void RequestJump() { jumpQueued = true; }
+
+        public bool ConsumeJump()
+        {
+            var requested = jumpQueued;
+            jumpQueued = false;
+            return requested;
+        }
 
         void ReadTouch()
         {

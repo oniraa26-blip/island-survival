@@ -29,6 +29,7 @@ Touch (the required product UX):
 - Lower-left 45%: touch/drag dynamic joystick
 - Right-side empty space: drag camera yaw/pitch
 - `RUN`: hold to sprint
+- `JUMP`: grounded jump
 - Context button: appears only for the current usable target
 - `BAG`: inventory, consume, craft, equip, and build recipes
 - Placement controls: rotate, confirm, cancel
@@ -38,6 +39,7 @@ Development fallback:
 - WASD/arrows: move
 - Right mouse drag: camera
 - Left Shift: sprint
+- Space: jump
 - E: interact
 - Tab: inventory
 - F5/F8: save/load (Editor or development build)

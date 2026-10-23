@@ -10,7 +10,10 @@ namespace IslandSurvival.Core
         public float walkSpeed = 3.5f;
         public float sprintSpeed = 6f;
         public float turnSpeed = 14f;
+        [Min(0.1f)] public float jumpHeight = 1.25f;
         public float gravity = -24f;
+        [Range(0f, 1f)] public float airControl = 0.35f;
+        [Min(0.1f)] public float groundedStickForce = 2f;
         [Header("Camera")]
         public float cameraDistance = 6f;
         public float cameraSensitivity = 0.16f;
