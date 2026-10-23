@@ -10,19 +10,18 @@ namespace IslandSurvival.Items
 
         public ItemDatabase()
         {
-            Add(new ItemDefinition("stick", "Stick", ItemCategory.Resource));
-            Add(new ItemDefinition("stone", "Stone", ItemCategory.Resource));
-            Add(new ItemDefinition("fiber", "Fiber", ItemCategory.Resource));
-            Add(new ItemDefinition("wood", "Wood", ItemCategory.Resource));
-            var coconut = new ItemDefinition("coconut", "Coconut", ItemCategory.Food);
+            Add(new ItemDefinition("stick", "item.stick.name", "item.stick.description", ItemCategory.Resource));
+            Add(new ItemDefinition("stone", "item.stone.name", "item.stone.description", ItemCategory.Resource));
+            Add(new ItemDefinition("fiber", "item.fiber.name", "item.fiber.description", ItemCategory.Resource));
+            Add(new ItemDefinition("wood", "item.wood.name", "item.wood.description", ItemCategory.Resource));
+            var coconut = new ItemDefinition("coconut", "item.coconut.name", "item.coconut.description", ItemCategory.Food);
             coconut.hungerRestore = 10f; coconut.thirstRestore = 15f;
-            coconut.description = "A fresh coconut. Restores a little hunger and thirst.";
             Add(coconut);
-            var axe = new ItemDefinition("stone_axe", "Stone Axe", ItemCategory.Tool, false);
-            axe.equippable = true; axe.description = "A simple axe suitable for chopping palms.";
+            var axe = new ItemDefinition("stone_axe", "item.stone_axe.name", "item.stone_axe.description", ItemCategory.Tool, false);
+            axe.equippable = true;
             Add(axe);
-            var knife = new ItemDefinition("stone_knife", "Stone Knife", ItemCategory.Tool, false);
-            knife.equippable = true; knife.description = "A basic cutting tool.";
+            var knife = new ItemDefinition("stone_knife", "item.stone_knife.name", "item.stone_knife.description", ItemCategory.Tool, false);
+            knife.equippable = true;
             Add(knife);
         }
 

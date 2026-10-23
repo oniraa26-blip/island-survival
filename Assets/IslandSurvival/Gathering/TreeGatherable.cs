@@ -11,7 +11,7 @@ namespace IslandSurvival.Gathering
         public string persistentId;
         public event Action HitFeedback;
         public event Action Depleted;
-        public string ActionLabel { get { return CanInteract ? "Chop palm" : "Stone Axe required"; } }
+        public string ActionLabel { get { return ServiceRegistry.Localization.Get(CanInteract ? "interaction.chop_palm" : "interaction.axe_required"); } }
         public bool CanInteract { get { return hitsRemaining > 0 && ServiceRegistry.Equipment.MainHandItemId == "stone_axe"; } }
         void Awake() { hitsRemaining = ServiceRegistry.Tuning == null ? 3 : ServiceRegistry.Tuning.treeHitCount; }
         public void Interact()

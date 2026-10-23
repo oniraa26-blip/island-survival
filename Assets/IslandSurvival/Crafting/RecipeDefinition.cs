@@ -15,11 +15,11 @@ namespace IslandSurvival.Crafting
     public sealed class RecipeDefinition
     {
         public string id;
-        public string displayName;
+        public string displayNameKey;
         public string outputItemId;
         public int outputAmount;
         public List<Ingredient> ingredients = new List<Ingredient>();
-        public RecipeDefinition(string id, string name, string output, params Ingredient[] costs)
-        { this.id = id; displayName = name; outputItemId = output; outputAmount = 1; ingredients.AddRange(costs); }
+        public RecipeDefinition(string id, string nameKey, string output, params Ingredient[] costs)
+        { this.id = id; displayNameKey = nameKey; outputItemId = output; outputAmount = 1; ingredients.AddRange(costs); }
     }
 }

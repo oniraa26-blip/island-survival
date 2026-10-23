@@ -9,14 +9,14 @@ namespace IslandSurvival.TimeSystem
         Light sun;
         PrototypeTuning tuning;
         [Range(0f, 1f)] public float normalizedTime = 0.3f;
-        public string Phase
+        public string PhaseKey
         {
             get
             {
-                if (normalizedTime < 0.25f) return "Morning";
-                if (normalizedTime < 0.58f) return "Day";
-                if (normalizedTime < 0.75f) return "Evening";
-                return "Night";
+                if (normalizedTime < 0.25f) return "phase.morning";
+                if (normalizedTime < 0.58f) return "phase.day";
+                if (normalizedTime < 0.75f) return "phase.evening";
+                return "phase.night";
             }
         }
         public event Action Changed;

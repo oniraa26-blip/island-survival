@@ -8,7 +8,7 @@ namespace IslandSurvival.Building
     {
         public string persistentId;
         public string buildableId;
-        public string ActionLabel { get { return buildableId == "leaf_bed" ? "Sleep / set respawn" : "Inspect campfire"; } }
+        public string ActionLabel { get { return ServiceRegistry.Localization.Get(buildableId == "leaf_bed" ? "interaction.sleep_respawn" : "interaction.inspect_campfire"); } }
         public bool CanInteract { get { return true; } }
         public void Interact()
         {

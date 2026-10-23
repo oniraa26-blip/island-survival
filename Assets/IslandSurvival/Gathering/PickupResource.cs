@@ -8,7 +8,7 @@ namespace IslandSurvival.Gathering
     {
         public string itemId;
         public int amount = 1;
-        public string ActionLabel { get { return "Pick up " + ServiceRegistry.Items.Get(itemId).displayName; } }
+        public string ActionLabel { get { return ServiceRegistry.Localization.Format("interaction.pick_up_item", ServiceRegistry.Localization.Get(ServiceRegistry.Items.Get(itemId).displayNameKey)); } }
         public bool CanInteract { get { return enabled && gameObject.activeSelf; } }
         public void Interact()
         {

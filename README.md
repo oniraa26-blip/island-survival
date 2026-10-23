@@ -30,6 +30,7 @@ Touch (the required product UX):
 - Right-side empty space: drag camera yaw/pitch
 - `RUN`: hold to sprint
 - `JUMP`: grounded jump
+- `CÀI ĐẶT` / `SETTINGS`: switch immediately between Vietnamese and English
 - Context button: appears only for the current usable target
 - `BAG`: inventory, consume, craft, equip, and build recipes
 - Placement controls: rotate, confirm, cancel
@@ -77,6 +78,12 @@ iOS exports to `Builds/iOS`, Web/PWA to `Builds/WebPWA`, and Android to `Builds/
 Runtime code is split into narrow domains under `Assets/IslandSurvival`: Core, Input, Player, Camera, Interaction, Items, Inventory, Equipment, Gathering, Crafting, Building, Survival, Time, Save, UI, and World. `ServiceRegistry` is wiring only; behavior remains in each domain. Items and recipes use definitions/models rather than per-item switch statements.
 
 Save data is local JSON (`prototype_0_1_save.json`), starts at schema version 1, and preserves player transform, respawn, inventory, main-hand equipment, survival state, time, and placed camp objects.
+
+## Localization
+
+Vietnamese (`vi-VN`) is the first-run default and English (`en-US`) is the second supported locale. The language choice is a separate `PlayerPrefs` setting, which uses IndexedDB in WebGL. Runtime text uses keys from the UTF-8 catalogs under `Assets/IslandSurvival/Resources/Localization`; internal IDs such as `stone_axe` remain unchanged. The bundled Noto Sans font supplies Vietnamese glyphs on iOS, Web, Android, and desktop.
+
+Do not add player-facing literals to gameplay or UI code. Add the same key and a non-empty translation to every locale catalog, then request it through `LocalizationService.Get` or `Format`. See [Docs/LOCALIZATION.md](Docs/LOCALIZATION.md) for the complete workflow and validation rules.
 
 ## Known limitations
 

@@ -10,9 +10,9 @@ namespace IslandSurvival.Building
     [Serializable]
     public sealed class BuildRecipe
     {
-        public string id, displayName;
+        public string id, displayNameKey;
         public Dictionary<string, int> costs;
-        public BuildRecipe(string id, string name, Dictionary<string, int> costs) { this.id = id; displayName = name; this.costs = costs; }
+        public BuildRecipe(string id, string nameKey, Dictionary<string, int> costs) { this.id = id; displayNameKey = nameKey; this.costs = costs; }
     }
 
     public sealed class BuildSystem : MonoBehaviour
@@ -31,8 +31,8 @@ namespace IslandSurvival.Building
         public void Initialize(InventoryModel inventory, UnityEngine.Camera viewCamera)
         {
             this.inventory = inventory; this.viewCamera = viewCamera;
-            Recipes.Add(new BuildRecipe("campfire", "Campfire", new Dictionary<string, int> { { "stone", 2 }, { "wood", 2 } }));
-            Recipes.Add(new BuildRecipe("leaf_bed", "Leaf Bed", new Dictionary<string, int> { { "wood", 3 }, { "fiber", 3 } }));
+            Recipes.Add(new BuildRecipe("campfire", "building.campfire.name", new Dictionary<string, int> { { "stone", 2 }, { "wood", 2 } }));
+            Recipes.Add(new BuildRecipe("leaf_bed", "building.leaf_bed.name", new Dictionary<string, int> { { "wood", 3 }, { "fiber", 3 } }));
         }
 
         public void Begin(string id)
@@ -40,9 +40,9 @@ namespace IslandSurvival.Building
             Cancel();
             active = Recipes.Find(r => r.id == id);
             if (active == null) return;
-            foreach (var cost in active.costs) if (inventory.Count(cost.Key) < cost.Value) { Report("Missing materials for " + active.displayName); active = null; return; }
+            foreach (var cost in active.costs) if (inventory.Count(cost.Key) < cost.Value) { Report(ServiceRegistry.Localization.Format("build.missing_materials", ServiceRegistry.Localization.Get(active.displayNameKey))); active = null; return; }
             ghost = WorldFactory.CreateBuildableVisual(active.id, true);
-            Report("Move, rotate, then confirm");
+            Report(ServiceRegistry.Localization.Get("build.move_rotate_confirm"));
         }
         void Update()
         {
@@ -62,15 +62,15 @@ namespace IslandSurvival.Building
         public void Rotate() { rotation += 45f; }
         public void Confirm()
         {
-            if (ghost == null || !valid) { Report("Invalid placement"); return; }
-            foreach (var cost in active.costs) if (inventory.Count(cost.Key) < cost.Value) { Report("Materials changed"); Cancel(); return; }
+            if (ghost == null || !valid) { Report(ServiceRegistry.Localization.Get("build.invalid_placement")); return; }
+            foreach (var cost in active.costs) if (inventory.Count(cost.Key) < cost.Value) { Report(ServiceRegistry.Localization.Get("build.materials_changed")); Cancel(); return; }
             foreach (var cost in active.costs) inventory.Remove(cost.Key, cost.Value);
             var placedObject = WorldFactory.CreateBuildableVisual(active.id, false);
             placedObject.transform.SetPositionAndRotation(ghost.transform.position, ghost.transform.rotation);
             var placed = placedObject.AddComponent<PlacedBuildable>();
             placed.buildableId = active.id; placed.persistentId = Guid.NewGuid().ToString("N"); Placed.Add(placed);
-            var placedName = active.displayName;
-            Cancel(); Report("Placed " + placedName); ServiceRegistry.Save.SaveNow();
+            var placedName = ServiceRegistry.Localization.Get(active.displayNameKey);
+            Cancel(); Report(ServiceRegistry.Localization.Format("build.placed", placedName)); ServiceRegistry.Save.SaveNow();
         }
         public PlacedBuildable Restore(string id, string persistentId, Vector3 position, Quaternion rotationValue)
         {

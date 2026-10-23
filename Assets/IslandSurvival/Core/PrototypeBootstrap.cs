@@ -6,6 +6,7 @@ using IslandSurvival.InputSystem;
 using IslandSurvival.Interaction;
 using IslandSurvival.Inventory;
 using IslandSurvival.Items;
+using IslandSurvival.Localization;
 using IslandSurvival.Player;
 using IslandSurvival.Platform;
 using IslandSurvival.Save;
@@ -40,6 +41,7 @@ namespace IslandSurvival.Core
             ServiceRegistry.Tuning = new PrototypeTuning();
             ServiceRegistry.Platform = PlatformProfile.Detect();
             PlatformQualityController.Apply(ServiceRegistry.Platform);
+            ServiceRegistry.Localization = LocalizationService.LoadDefault();
             ServiceRegistry.Items = new ItemDatabase();
             ServiceRegistry.Inventory = new InventoryModel(ServiceRegistry.Items, 16);
             ServiceRegistry.Equipment = new EquipmentModel(ServiceRegistry.Inventory, ServiceRegistry.Items);
@@ -67,7 +69,7 @@ namespace IslandSurvival.Core
             var zones = new GameObject("ZoneStreaming").AddComponent<ZoneStreamingService>(); zones.Initialize(ServiceRegistry.Platform.maxLoadedZones); ServiceRegistry.Zones = zones;
             var save = new SaveSystem(SaveStoreFactory.Create(Application.persistentDataPath), playerObject.transform.position); ServiceRegistry.Save = save;
             ServiceRegistry.Survival.Died += save.RespawnPlayer;
-            var crafting = new CraftingSystem(ServiceRegistry.Inventory);
+            var crafting = new CraftingSystem(ServiceRegistry.Inventory, ServiceRegistry.Items, ServiceRegistry.Localization);
 
             if (FindFirstObjectByType<EventSystem>() == null) { var events = new GameObject("EventSystem"); events.AddComponent<EventSystem>(); events.AddComponent<StandaloneInputModule>(); }
             var hud = new GameObject("MobileHUD").AddComponent<PrototypeHUD>(); hud.Initialize(input, interactor, crafting);

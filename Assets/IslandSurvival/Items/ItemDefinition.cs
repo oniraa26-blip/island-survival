@@ -9,8 +9,8 @@ namespace IslandSurvival.Items
     public sealed class ItemDefinition
     {
         public string id;
-        public string displayName;
-        [TextArea] public string description;
+        public string displayNameKey;
+        public string descriptionKey;
         public ItemCategory category;
         public Sprite icon;
         public bool stackable;
@@ -19,11 +19,11 @@ namespace IslandSurvival.Items
         public float hungerRestore;
         public float thirstRestore;
 
-        public ItemDefinition(string id, string name, ItemCategory category, bool stackable = true, int maxStack = 20)
+        public ItemDefinition(string id, string nameKey, string descriptionKey, ItemCategory category, bool stackable = true, int maxStack = 20)
         {
-            this.id = id; displayName = name; this.category = category;
+            this.id = id; displayNameKey = nameKey; this.descriptionKey = descriptionKey; this.category = category;
             this.stackable = stackable; this.maxStack = stackable ? maxStack : 1;
-            description = string.Empty; icon = null;
+            icon = null;
         }
     }
 }
