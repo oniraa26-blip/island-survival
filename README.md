@@ -10,7 +10,7 @@ A touch-first, cross-platform mobile-landscape Unity vertical slice set on Origi
 - URP 14.0.11 (restored by Unity Package Manager from `Packages/manifest.json`)
 - Relevant Unity modules: iOS Build Support on macOS, WebGL Build Support, and Android SDK/NDK/OpenJDK for their respective builds
 
-The project contains no paid assets and does not require secrets or external services. Placeholder visuals are generated from simple primitives at runtime. On first editor import, `UrpProjectSetup` creates the local mobile URP renderer/pipeline assets and assigns them automatically. Read [Docs/PLATFORM_STRATEGY.md](Docs/PLATFORM_STRATEGY.md) before any Unity 6 migration.
+The project contains no paid assets and does not require secrets or external services. Placeholder visuals are generated from simple primitives at runtime. On first editor import, `UrpProjectSetup` creates the local mobile URP renderer/pipeline assets and assigns them automatically. Read [Docs/PLATFORM_STRATEGY.md](Docs/PLATFORM_STRATEGY.md) before any Unity 6 migration and [Docs/WEB_DEPLOYMENT.md](Docs/WEB_DEPLOYMENT.md) for the current Web milestone status and owner workflow.
 
 ## Open and run
 
