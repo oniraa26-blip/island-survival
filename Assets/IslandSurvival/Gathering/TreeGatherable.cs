@@ -9,6 +9,8 @@ namespace IslandSurvival.Gathering
     {
         int hitsRemaining;
         public string persistentId;
+        public event Action HitFeedback;
+        public event Action Depleted;
         public string ActionLabel { get { return CanInteract ? "Chop palm" : "Stone Axe required"; } }
         public bool CanInteract { get { return hitsRemaining > 0 && ServiceRegistry.Equipment.MainHandItemId == "stone_axe"; } }
         void Awake() { hitsRemaining = ServiceRegistry.Tuning == null ? 3 : ServiceRegistry.Tuning.treeHitCount; }
@@ -17,12 +19,20 @@ namespace IslandSurvival.Gathering
             if (!CanInteract) return;
             hitsRemaining--;
             transform.localScale *= 0.97f;
+            if (HitFeedback != null) HitFeedback();
             if (hitsRemaining <= 0)
             {
                 ServiceRegistry.Inventory.Add("wood", 4);
                 transform.rotation *= Quaternion.Euler(0f, 0f, 78f);
                 enabled = false;
+                if (Depleted != null) Depleted();
             }
+        }
+
+        public void ResetForRegrowth()
+        {
+            hitsRemaining = ServiceRegistry.Tuning.treeHitCount;
+            transform.rotation = Quaternion.identity; transform.localScale = Vector3.one; enabled = true;
         }
     }
 }

@@ -7,7 +7,7 @@ namespace IslandSurvival.InputSystem
     {
         public Vector2 Move { get; private set; }
         public Vector2 LookDelta { get; private set; }
-        public bool SprintHeld { get; set; }
+        public bool SprintHeld { get; private set; }
         public bool InteractPressed { get; set; }
         public Vector2 JoystickOrigin { get; private set; }
         public Vector2 JoystickPosition { get; private set; }
@@ -15,12 +15,15 @@ namespace IslandSurvival.InputSystem
         int moveFinger = -1;
         int lookFinger = -1;
         Vector3 lastMousePosition;
+        bool sprintButtonHeld;
         const float JoystickRadius = 90f;
 
         void Update()
         {
             LookDelta = Vector2.zero;
             ReadTouch();
+            if (moveFinger < 0) Move = Vector2.zero;
+            SprintHeld = sprintButtonHeld;
 #if UNITY_EDITOR || UNITY_STANDALONE
             var keyboard = new Vector2(
                 (UnityEngine.Input.GetKey(KeyCode.D) || UnityEngine.Input.GetKey(KeyCode.RightArrow) ? 1f : 0f) - (UnityEngine.Input.GetKey(KeyCode.A) || UnityEngine.Input.GetKey(KeyCode.LeftArrow) ? 1f : 0f),
@@ -32,7 +35,7 @@ namespace IslandSurvival.InputSystem
                 LookDelta = new Vector2(delta.x, -delta.y);
             }
             lastMousePosition = UnityEngine.Input.mousePosition;
-            SprintHeld = UnityEngine.Input.GetKey(KeyCode.LeftShift) || SprintHeld;
+            SprintHeld = UnityEngine.Input.GetKey(KeyCode.LeftShift) || sprintButtonHeld;
             if (UnityEngine.Input.GetKeyDown(KeyCode.E)) InteractPressed = true;
 #endif
         }
@@ -40,10 +43,9 @@ namespace IslandSurvival.InputSystem
         void LateUpdate()
         {
             InteractPressed = false;
-#if UNITY_EDITOR || UNITY_STANDALONE
-            if (!UnityEngine.Input.GetKey(KeyCode.LeftShift)) SprintHeld = false;
-#endif
         }
+
+        public void SetSprintButton(bool held) { sprintButtonHeld = held; }
 
         void ReadTouch()
         {

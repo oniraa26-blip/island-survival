@@ -36,7 +36,7 @@ namespace IslandSurvival.UI
             phase = Label("Phase", safeArea, "Morning", 25, TextAnchor.UpperRight, new Vector2(-300, -18), new Vector2(280, 55)); Anchor(phase.rectTransform, Vector2.one, Vector2.one);
             var inventoryButton = Button("Inventory", safeArea, "BAG", new Vector2(-170, -75), new Vector2(140, 62), ToggleInventory); Anchor(inventoryButton.GetComponent<RectTransform>(), Vector2.one, Vector2.one);
             context = Button("Context", safeArea, "Interact", new Vector2(-245, 95), new Vector2(220, 105), interactor.TriggerCurrent); Anchor(context.GetComponent<RectTransform>(), new Vector2(1f, 0f), new Vector2(1f, 0f)); context.gameObject.SetActive(false);
-            var sprint = Button("Sprint", safeArea, "RUN", new Vector2(-95, 225), new Vector2(130, 78), null); Anchor(sprint.GetComponent<RectTransform>(), new Vector2(1f, 0f), new Vector2(1f, 0f)); AddHold(sprint, value => input.SprintHeld = value);
+            var sprint = Button("Sprint", safeArea, "RUN", new Vector2(-95, 225), new Vector2(130, 78), null); Anchor(sprint.GetComponent<RectTransform>(), new Vector2(1f, 0f), new Vector2(1f, 0f)); AddHold(sprint, input.SetSprintButton);
             toast = Label("Toast", safeArea, "", 28, TextAnchor.MiddleCenter, new Vector2(-330, 120), new Vector2(660, 72)); Anchor(toast.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f));
             inventoryPanel = Panel("InventoryPanel", safeArea, new Color(0.035f, 0.08f, 0.09f, 0.94f), new Vector2(0.61f, 0.1f), new Vector2(0.98f, 0.9f)); inventoryPanel.SetActive(false);
             inventoryText = Label("Slots", inventoryPanel.transform, "", 25, TextAnchor.UpperLeft, new Vector2(24, -68), new Vector2(-48, -210)); Stretch(inventoryText.rectTransform);

@@ -90,6 +90,13 @@ namespace IslandSurvival.Inventory
             Notify(); return true;
         }
 
+        public bool ExpandCapacity(int additionalSlots)
+        {
+            if (additionalSlots <= 0) return false;
+            for (var i = 0; i < additionalSlots; i++) slots.Add(new InventorySlot());
+            Notify(); return true;
+        }
+
         public void Replace(IEnumerable<InventorySlot> replacement)
         {
             foreach (var slot in slots) { slot.itemId = string.Empty; slot.quantity = 0; }

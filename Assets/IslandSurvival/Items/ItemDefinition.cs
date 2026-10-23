@@ -12,6 +12,7 @@ namespace IslandSurvival.Items
         public string displayName;
         [TextArea] public string description;
         public ItemCategory category;
+        public Sprite icon;
         public bool stackable;
         public int maxStack = 20;
         public bool equippable;
@@ -22,7 +23,7 @@ namespace IslandSurvival.Items
         {
             this.id = id; displayName = name; this.category = category;
             this.stackable = stackable; this.maxStack = stackable ? maxStack : 1;
-            description = string.Empty;
+            description = string.Empty; icon = null;
         }
     }
 }

@@ -51,8 +51,8 @@ namespace IslandSurvival.World
         public static void CreateStartingBeach()
         {
             var world = new GameObject("StartingBeach_World").transform;
-            Primitive("Beach", PrimitiveType.Cube, new Vector3(0f, -0.75f, 18f), new Vector3(75f, 1.5f, 75f), new Color(0.88f, 0.75f, 0.48f), world);
-            Primitive("Water", PrimitiveType.Cube, new Vector3(0f, -1.15f, -38f), new Vector3(180f, 1f, 55f), new Color(0.08f, 0.62f, 0.7f), world);
+            Primitive("Beach", PrimitiveType.Cube, new Vector3(0f, -0.75f, 18f), new Vector3(140f, 1.5f, 75f), new Color(0.88f, 0.75f, 0.48f), world);
+            Primitive("Water", PrimitiveType.Cube, new Vector3(0f, -1.15f, -38f), new Vector3(240f, 1f, 55f), new Color(0.08f, 0.62f, 0.7f), world);
             Primitive("Inland", PrimitiveType.Cube, new Vector3(0f, 0f, 67f), new Vector3(150f, 3f, 35f), new Color(0.18f, 0.58f, 0.26f), world);
             for (var i = 0; i < 20; i++)
             {

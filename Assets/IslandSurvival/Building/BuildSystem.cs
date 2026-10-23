@@ -56,6 +56,7 @@ namespace IslandSurvival.Building
                 var overlaps = Physics.OverlapBox(hit.point + Vector3.up * 0.35f, active.id == "leaf_bed" ? new Vector3(0.8f, 0.3f, 1.25f) : new Vector3(0.75f, 0.3f, 0.75f), ghost.transform.rotation, ~0, QueryTriggerInteraction.Ignore);
                 foreach (var overlap in overlaps) if (!overlap.transform.IsChildOf(ghost.transform) && !overlap.CompareTag("Player") && overlap.gameObject.name != "Beach") valid = false;
             }
+            ghost.transform.localScale = valid ? Vector3.one : Vector3.one * 0.86f;
             WorldFactory.Tint(ghost, valid ? new Color(0.25f, 0.85f, 0.55f, 0.65f) : new Color(1f, 0.35f, 0.25f, 0.65f));
         }
         public void Rotate() { rotation += 45f; }
