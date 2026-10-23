@@ -1,21 +1,29 @@
 using System;
+using System.Collections.Generic;
 using IslandSurvival.Gathering;
+using IslandSurvival.Platform;
 using UnityEngine;
 
 namespace IslandSurvival.World
 {
     public static class WorldFactory
     {
+        static readonly Dictionary<Color32, Material> Materials = new Dictionary<Color32, Material>();
+
         public static Material Material(Color color)
         {
+            var key = (Color32)color;
+            Material existing;
+            if (Materials.TryGetValue(key, out existing) && existing != null) return existing;
             var shader = Shader.Find("Universal Render Pipeline/Lit");
             if (shader == null) shader = Shader.Find("Standard");
-            var material = new Material(shader); material.color = color; return material;
+            var material = new Material(shader); material.color = color; material.enableInstancing = true;
+            Materials[key] = material; return material;
         }
         public static GameObject Primitive(string name, PrimitiveType type, Vector3 position, Vector3 scale, Color color, Transform parent = null)
         {
             var obj = GameObject.CreatePrimitive(type); obj.name = name; obj.transform.SetParent(parent);
-            obj.transform.position = position; obj.transform.localScale = scale; obj.GetComponent<Renderer>().material = Material(color); return obj;
+            obj.transform.position = position; obj.transform.localScale = scale; obj.GetComponent<Renderer>().sharedMaterial = Material(color); return obj;
         }
         public static void Tint(GameObject root, Color color)
         { foreach (var renderer in root.GetComponentsInChildren<Renderer>()) renderer.material.color = color; }
@@ -48,7 +56,7 @@ namespace IslandSurvival.World
             return root;
         }
 
-        public static void CreateStartingBeach()
+        public static void CreateStartingBeach(PlatformProfile profile)
         {
             var world = new GameObject("StartingBeach_World").transform;
             Primitive("Beach", PrimitiveType.Cube, new Vector3(0f, -0.75f, 18f), new Vector3(140f, 1.5f, 75f), new Color(0.88f, 0.75f, 0.48f), world);
@@ -59,7 +67,8 @@ namespace IslandSurvival.World
                 var angle = i * 0.87f; var radius = 32f + i * 2.5f;
                 Primitive("RockBoundary", PrimitiveType.Sphere, new Vector3(Mathf.Sin(angle) * radius, 1.5f, 30f + Mathf.Cos(angle) * radius), new Vector3(5f, 3.5f, 4f), new Color(0.29f, 0.36f, 0.34f), world);
             }
-            for (var i = 0; i < 12; i++) CreatePalm(new Vector3(-28f + (i % 6) * 11f, 0.2f, 37f + (i / 6) * 13f), "tree_" + i, world);
+            var palmCount = Mathf.Max(6, Mathf.RoundToInt(12 * profile.vegetationDensity));
+            for (var i = 0; i < palmCount; i++) CreatePalm(new Vector3(-28f + (i % 6) * 11f, 0.2f, 37f + (i / 6) * 13f), "tree_" + i, world);
             var pickupData = new[] { "stick", "stone", "coconut", "fiber", "stick", "stone", "coconut", "fiber", "stick", "stone", "fiber", "stone", "stick", "coconut", "fiber", "stone", "stick", "fiber" };
             for (var i = 0; i < pickupData.Length; i++) CreatePickup(pickupData[i], new Vector3(-18f + (i % 6) * 7f, 0.35f, 4f + (i / 6) * 8f), world);
             for (var i = 0; i < 7; i++) Primitive("DistantOriginSilhouette", PrimitiveType.Sphere, new Vector3(-70f + i * 23f, 15f + (i % 3) * 7f, 105f + Mathf.Abs(3 - i) * 4f), new Vector3(30f, 28f, 18f), new Color(0.12f, 0.34f, 0.25f), world);
@@ -82,6 +91,11 @@ namespace IslandSurvival.World
                 leaf.transform.localPosition = Vector3.up * 8.2f; leaf.transform.localRotation = Quaternion.Euler(18f, i * 60f, 0f);
             }
             var tree = root.AddComponent<TreeGatherable>(); tree.persistentId = id;
+            var lodGroup = root.AddComponent<LODGroup>();
+            lodGroup.fadeMode = LODFadeMode.CrossFade;
+            lodGroup.animateCrossFading = true;
+            lodGroup.SetLODs(new[] { new LOD(0.035f, root.GetComponentsInChildren<Renderer>()) });
+            lodGroup.RecalculateBounds();
         }
     }
 }

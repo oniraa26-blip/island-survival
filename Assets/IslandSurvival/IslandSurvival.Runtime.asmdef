@@ -1,7 +1,7 @@
 {
   "name": "IslandSurvival.Runtime",
   "rootNamespace": "IslandSurvival",
-  "references": ["Unity.ugui"],
+  "references": ["Unity.ugui", "Unity.RenderPipelines.Universal.Runtime"],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,

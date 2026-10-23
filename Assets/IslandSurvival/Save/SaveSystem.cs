@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using IslandSurvival.Building;
 using IslandSurvival.Core;
 using IslandSurvival.Inventory;
@@ -33,11 +32,11 @@ namespace IslandSurvival.Save
 
     public sealed class SaveSystem
     {
-        readonly string path;
+        readonly ISaveStore store;
         Vector3 defaultSpawn;
         Vector3 respawn;
         bool hasRespawn;
-        public SaveSystem(string path, Vector3 defaultSpawn) { this.path = path; this.defaultSpawn = defaultSpawn; }
+        public SaveSystem(ISaveStore store, Vector3 defaultSpawn) { this.store = store; this.defaultSpawn = defaultSpawn; }
         public void SetRespawn(Vector3 position) { respawn = position; hasRespawn = true; }
         public Vector3 RespawnPosition { get { return hasRespawn ? respawn : defaultSpawn; } }
         public void RespawnPlayer() { ServiceRegistry.Player.Teleport(RespawnPosition, Quaternion.identity); ServiceRegistry.Survival.Revive(); }
@@ -52,13 +51,14 @@ namespace IslandSurvival.Save
             data.survival = ServiceRegistry.Survival.Snapshot(); data.timeOfDay = ServiceRegistry.Time.normalizedTime;
             foreach (var placed in ServiceRegistry.Building.Placed)
                 data.placed.Add(new PlacedData { id = placed.buildableId, persistentId = placed.persistentId, transform = new TransformData(placed.transform.position, placed.transform.rotation) });
-            File.WriteAllText(path, JsonUtility.ToJson(data, true));
+            store.Write(JsonUtility.ToJson(data, true));
         }
         public bool Load()
         {
-            if (!File.Exists(path)) return false;
+            string json;
+            if (!store.TryRead(out json)) return false;
             PrototypeSaveData data;
-            try { data = JsonUtility.FromJson<PrototypeSaveData>(File.ReadAllText(path)); }
+            try { data = JsonUtility.FromJson<PrototypeSaveData>(json); }
             catch (Exception e) { Debug.LogWarning("Save ignored: " + e.Message); return false; }
             if (data == null || data.version != 1) return false;
             ServiceRegistry.Inventory.Replace(data.inventory); ServiceRegistry.Equipment.Restore(data.mainHand);

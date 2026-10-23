@@ -18,6 +18,8 @@ namespace IslandSurvival.UI
         GameObject inventoryPanel, buildControls; Image stickBase, stickKnob;
         float toastUntil;
         Font font;
+        Rect lastSafeArea;
+        Vector2Int lastScreenSize;
         public void Initialize(MobileInput input, PlayerInteractor interactor, CraftingSystem crafting)
         {
             this.input = input; this.interactor = interactor; this.crafting = crafting;
@@ -61,6 +63,7 @@ namespace IslandSurvival.UI
             var visible = input.JoystickVisible; stickBase.gameObject.SetActive(visible); stickKnob.gameObject.SetActive(visible);
             if (visible) { stickBase.rectTransform.position = input.JoystickOrigin; stickKnob.rectTransform.position = input.JoystickPosition; }
             if (UnityEngine.Input.GetKeyDown(KeyCode.Tab)) ToggleInventory();
+            if (Screen.safeArea != lastSafeArea || lastScreenSize.x != Screen.width || lastScreenSize.y != Screen.height) ApplySafeArea();
         }
         void TargetChanged(IInteractable target) { context.gameObject.SetActive(target != null && target.CanInteract); if (target != null) context.GetComponentInChildren<Text>().text = target.ActionLabel; }
         void ToggleInventory() { inventoryPanel.SetActive(!inventoryPanel.activeSelf); RefreshInventory(); }
@@ -75,7 +78,7 @@ namespace IslandSurvival.UI
         void StartBuild(string id) { inventoryPanel.SetActive(false); ServiceRegistry.Building.Begin(id); buildControls.SetActive(ServiceRegistry.Building.IsPlacing); }
         void CancelBuild() { ServiceRegistry.Building.Cancel(); buildControls.SetActive(false); }
         void ShowToast(string message) { toast.text = message; toastUntil = UnityEngine.Time.unscaledTime + 3f; if (!ServiceRegistry.Building.IsPlacing && buildControls != null) buildControls.SetActive(false); }
-        void ApplySafeArea() { var area = Screen.safeArea; safeArea.anchorMin = area.position / new Vector2(Screen.width, Screen.height); safeArea.anchorMax = (area.position + area.size) / new Vector2(Screen.width, Screen.height); safeArea.offsetMin = safeArea.offsetMax = Vector2.zero; }
+        void ApplySafeArea() { var area = Screen.safeArea; safeArea.anchorMin = area.position / new Vector2(Screen.width, Screen.height); safeArea.anchorMax = (area.position + area.size) / new Vector2(Screen.width, Screen.height); safeArea.offsetMin = safeArea.offsetMax = Vector2.zero; lastSafeArea = area; lastScreenSize = new Vector2Int(Screen.width, Screen.height); }
         GameObject Panel(string name, Transform parent, Color color, Vector2 min, Vector2 max) { var obj = new GameObject(name, typeof(RectTransform), typeof(Image)); obj.transform.SetParent(parent, false); var rt = obj.GetComponent<RectTransform>(); rt.anchorMin = min; rt.anchorMax = max; rt.offsetMin = rt.offsetMax = Vector2.zero; obj.GetComponent<Image>().color = color; return obj; }
         Text Label(string name, Transform parent, string value, int size, TextAnchor alignment, Vector2 position, Vector2 dimensions) { var obj = new GameObject(name, typeof(RectTransform), typeof(Text)); obj.transform.SetParent(parent, false); var text = obj.GetComponent<Text>(); text.font = font; text.fontSize = size; text.color = Color.white; text.alignment = alignment; text.text = value; var rt = text.rectTransform; rt.anchorMin = rt.anchorMax = new Vector2(0, 1); rt.pivot = new Vector2(0, 1); rt.anchoredPosition = position; rt.sizeDelta = dimensions; return text; }
         Button Button(string name, Transform parent, string value, Vector2 position, Vector2 dimensions, UnityEngine.Events.UnityAction callback) { var obj = Panel(name, parent, new Color(0.08f, 0.32f, 0.34f, 0.9f), Vector2.zero, Vector2.zero); var rt = obj.GetComponent<RectTransform>(); rt.pivot = Vector2.zero; rt.anchoredPosition = position; rt.sizeDelta = dimensions; var button = obj.AddComponent<Button>(); if (callback != null) button.onClick.AddListener(callback); var label = Label("Label", obj.transform, value, 24, TextAnchor.MiddleCenter, Vector2.zero, Vector2.zero); Stretch(label.rectTransform); return button; }
