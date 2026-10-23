@@ -1,4 +1,3 @@
-using IslandSurvival.CameraSystem;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 

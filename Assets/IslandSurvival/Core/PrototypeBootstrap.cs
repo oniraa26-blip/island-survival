@@ -50,7 +50,7 @@ namespace IslandSurvival.Core
         void BuildRuntime()
         {
             WorldFactory.CreateStartingBeach(ServiceRegistry.Platform);
-            var sunObject = new GameObject("Sun"); var sun = sunObject.AddComponent<Light>(); sun.type = LightType.Directional; sun.shadows = LightShadows.Soft;
+            var sunObject = new GameObject("Sun"); var sun = sunObject.AddComponent<Light>(); sun.type = LightType.Directional; sun.shadows = ServiceRegistry.Platform.useSoftShadows ? LightShadows.Soft : LightShadows.Hard;
             var time = new GameObject("TimeOfDay").AddComponent<TimeOfDayController>(); time.Initialize(sun, ServiceRegistry.Tuning); ServiceRegistry.Time = time;
 
             var input = new GameObject("MobileInput").AddComponent<MobileInput>();
