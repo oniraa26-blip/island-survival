@@ -43,6 +43,7 @@ PlayerSettings:
   il2cppCompilerConfiguration: 0
   allowUnsafeCode: 0
   useDeterministicCompilation: 1
+  activeInputHandler: 0
   additionalIl2CppArgs: 
   scriptingRuntimeVersion: 1
   gcIncremental: 1

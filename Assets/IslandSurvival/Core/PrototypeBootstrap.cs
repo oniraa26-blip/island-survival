@@ -26,7 +26,7 @@ namespace IslandSurvival.Core
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void AutoStart()
         {
-            if (FindObjectOfType<PrototypeBootstrap>() == null) new GameObject("PrototypeBootstrap").AddComponent<PrototypeBootstrap>();
+            if (FindFirstObjectByType<PrototypeBootstrap>() == null) new GameObject("PrototypeBootstrap").AddComponent<PrototypeBootstrap>();
         }
 
         void Awake()
@@ -69,7 +69,7 @@ namespace IslandSurvival.Core
             ServiceRegistry.Survival.Died += save.RespawnPlayer;
             var crafting = new CraftingSystem(ServiceRegistry.Inventory);
 
-            if (FindObjectOfType<EventSystem>() == null) { var events = new GameObject("EventSystem"); events.AddComponent<EventSystem>(); events.AddComponent<StandaloneInputModule>(); }
+            if (FindFirstObjectByType<EventSystem>() == null) { var events = new GameObject("EventSystem"); events.AddComponent<EventSystem>(); events.AddComponent<StandaloneInputModule>(); }
             var hud = new GameObject("MobileHUD").AddComponent<PrototypeHUD>(); hud.Initialize(input, interactor, crafting);
             save.Load(); nextAutosave = UnityEngine.Time.unscaledTime + 30f;
         }

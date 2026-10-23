@@ -23,7 +23,7 @@ namespace IslandSurvival.UI
         public void Initialize(MobileInput input, PlayerInteractor interactor, CraftingSystem crafting)
         {
             this.input = input; this.interactor = interactor; this.crafting = crafting;
-            font = Resources.GetBuiltinResource<Font>("Arial.ttf"); Build(); ApplySafeArea();
+            font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf"); Build(); ApplySafeArea();
             interactor.TargetChanged += TargetChanged; ServiceRegistry.Inventory.Changed += RefreshInventory;
             ServiceRegistry.Building.Status += ShowToast; RefreshInventory();
         }

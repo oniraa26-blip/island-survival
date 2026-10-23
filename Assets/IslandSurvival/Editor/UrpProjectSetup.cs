@@ -39,7 +39,7 @@ namespace IslandSurvival.Editor
                 AssetDatabase.CreateAsset(pipeline, PipelinePath);
             }
             pipeline.renderScale = 1f; pipeline.msaaSampleCount = 2; pipeline.supportsHDR = false;
-            GraphicsSettings.renderPipelineAsset = pipeline; QualitySettings.renderPipeline = pipeline;
+            GraphicsSettings.defaultRenderPipeline = pipeline; QualitySettings.renderPipeline = pipeline;
             EditorUtility.SetDirty(pipeline); AssetDatabase.SaveAssets();
         }
     }

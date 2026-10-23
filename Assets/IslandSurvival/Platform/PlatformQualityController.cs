@@ -14,7 +14,7 @@ namespace IslandSurvival.Platform
             QualitySettings.shadows = ShadowQuality.All;
             QualitySettings.softParticles = false;
             QualitySettings.lodBias = profile.lodBias;
-            QualitySettings.masterTextureLimit = profile.textureMipmapLimit;
+            QualitySettings.globalTextureMipmapLimit = profile.textureMipmapLimit;
             if (camera != null) camera.farClipPlane = profile.cameraFarClip;
             var urp = QualitySettings.renderPipeline as UniversalRenderPipelineAsset;
             if (urp != null)
