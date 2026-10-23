@@ -25,6 +25,7 @@ namespace IslandSurvival.Editor
             failures += RequireFile("Assets/WebGLTemplates/IslandSurvivalPWA/manifest.json");
             failures += RequireFile("Assets/WebGLTemplates/IslandSurvivalPWA/service-worker.js");
             failures += RequireFile("Assets/WebGLTemplates/IslandSurvivalPWA/icon.svg");
+            failures += RequireSingleUrpGlobalSettings();
             if (failures > 0) throw new InvalidOperationException("Prototype validation failed with " + failures + " issue(s). See Console.");
             Debug.Log("Prototype 0.1 project validation passed.");
         }
@@ -66,6 +67,13 @@ namespace IslandSurvival.Editor
             }
             if (enabledCount == 1) return 0;
             Debug.LogError("Prototype Web milestone must contain exactly one enabled scene."); return 1;
+        }
+        static int RequireSingleUrpGlobalSettings()
+        {
+            var assets = AssetDatabase.FindAssets("t:UniversalRenderPipelineGlobalSettings");
+            if (assets.Length == 1) return 0;
+            Debug.LogError("Expected exactly one URP Global Settings asset, found " + assets.Length + ". Keep Unity's generated asset and remove duplicates only after checking Graphics Settings.");
+            return 1;
         }
     }
 }
