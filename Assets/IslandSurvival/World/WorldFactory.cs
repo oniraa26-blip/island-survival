@@ -261,7 +261,14 @@ namespace IslandSurvival.World
         }
 
         static GameObject ZoneRoot(string name, Transform parent) { var root = new GameObject(name); root.transform.SetParent(parent, false); return root; }
-        static void CreateAudioHook(string name, Vector3 position, Transform parent) { var hook = new GameObject(name); hook.transform.SetParent(parent, false); hook.transform.localPosition = position; var source = hook.AddComponent<AudioSource>(); source.playOnAwake = false; source.loop = true; source.spatialBlend = 1f; }
+        static void CreateAudioHook(string name, Vector3 position, Transform parent)
+        {
+            // Hierarchy-only placement marker. The prototype has no licensed audio clips yet,
+            // so do not require Unity's optional Audio module until an audio system is authored.
+            var hook = new GameObject(name);
+            hook.transform.SetParent(parent, false);
+            hook.transform.localPosition = position;
+        }
 
         static void ConfigureEnvironment(PlatformProfile profile)
         {

@@ -68,7 +68,7 @@ The continuous terrain, lightweight discovery triggers, gameplay resource nodes,
 - No realtime reflections, post-processing stack, additional realtime lights, or desktop-only shader features.
 - One directional light; platform shadow distance/profile remains authoritative.
 - Small mesh counts and no new textures, avoiding Web texture memory growth.
-- AudioSources are silent placement hooks only and have no bundled clips.
+- Ambience points are hierarchy-only placement markers and have no bundled clips or dependency on Unity's optional Audio module.
 
 Frame rate and WebGL memory have not been measured in this cloud environment. Profile the built player before raising vegetation or shadow budgets.
 
