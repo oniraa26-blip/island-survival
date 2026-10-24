@@ -10,6 +10,7 @@ using IslandSurvival.Save;
 using IslandSurvival.Survival;
 using IslandSurvival.Streaming;
 using IslandSurvival.TimeSystem;
+using IslandSurvival.Visual;
 
 namespace IslandSurvival.Core
 {
@@ -28,11 +29,12 @@ namespace IslandSurvival.Core
         public static TimeOfDayController Time { get; internal set; }
         public static SaveSystem Save { get; internal set; }
         public static ZoneStreamingService Zones { get; internal set; }
+        public static VisualAssetResolver Visuals { get; internal set; }
 
         public static void Reset()
         {
             Tuning = null; Platform = null; Items = null; Localization = null; Inventory = null; Equipment = null; Discovery = null;
-            Survival = null; Player = null; Building = null; Time = null; Save = null; Zones = null;
+            Survival = null; Player = null; Building = null; Time = null; Save = null; Zones = null; Visuals = null;
         }
     }
 }

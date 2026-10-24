@@ -16,6 +16,7 @@ using IslandSurvival.Streaming;
 using IslandSurvival.TimeSystem;
 using IslandSurvival.UI;
 using IslandSurvival.World;
+using IslandSurvival.Visual;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -42,6 +43,7 @@ namespace IslandSurvival.Core
             ServiceRegistry.Tuning = new PrototypeTuning();
             ServiceRegistry.Platform = PlatformProfile.Detect();
             PlatformQualityController.Apply(ServiceRegistry.Platform);
+            ServiceRegistry.Visuals = VisualAssetResolver.Load(ServiceRegistry.Platform);
             ServiceRegistry.Localization = LocalizationService.LoadDefault();
             ServiceRegistry.Items = new ItemDatabase();
             ServiceRegistry.Inventory = new InventoryModel(ServiceRegistry.Items, 16);
@@ -54,7 +56,7 @@ namespace IslandSurvival.Core
         void BuildRuntime()
         {
             var demoWorld = WorldFactory.CreateStartingBeach(ServiceRegistry.Platform);
-            var sunObject = new GameObject("Sun"); var sun = sunObject.AddComponent<Light>(); sun.type = LightType.Directional; sun.shadows = ServiceRegistry.Platform.useSoftShadows ? LightShadows.Soft : LightShadows.Hard;
+            var sunObject = new GameObject("Sun"); var sun = sunObject.AddComponent<Light>(); sun.type = LightType.Directional;
             var time = new GameObject("TimeOfDay").AddComponent<TimeOfDayController>(); time.Initialize(sun, ServiceRegistry.Tuning); ServiceRegistry.Time = time;
 
             var input = new GameObject("MobileInput").AddComponent<MobileInput>();
@@ -62,7 +64,7 @@ namespace IslandSurvival.Core
             var controller = playerObject.AddComponent<CharacterController>(); controller.height = 1.8f; controller.radius = 0.38f; controller.center = new Vector3(0f, 0.9f, 0f);
             WorldFactory.CreatePlayerVisualRoot(playerObject.transform);
             var cameraObject = new GameObject("Main Camera"); cameraObject.tag = "MainCamera"; var camera = cameraObject.AddComponent<UnityEngine.Camera>(); camera.nearClipPlane = 0.15f; camera.farClipPlane = 250f;
-            camera.clearFlags = CameraClearFlags.SolidColor; camera.backgroundColor = new Color(0.43f, 0.73f, 0.82f);
+            TropicalDaylightProfile.Apply(ServiceRegistry.Visuals.Daylight, ServiceRegistry.Platform, sun, camera);
             PlatformQualityController.Apply(ServiceRegistry.Platform, camera);
             var cameraFollow = cameraObject.AddComponent<ThirdPersonCamera>(); cameraFollow.Initialize(playerObject.transform, input, ServiceRegistry.Tuning);
             var player = playerObject.AddComponent<PlayerController>(); player.Initialize(input, camera, ServiceRegistry.Tuning, ServiceRegistry.Survival); ServiceRegistry.Player = player;

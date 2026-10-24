@@ -6,6 +6,8 @@ A touch-first, cross-platform mobile-landscape Unity vertical slice set on Origi
 
 The current migration branch also contains the procedural **Origin Island Web Demo 0.3** playground: eight southern/central exploration zones, lightweight runtime zone activation, localized discoveries, and one saved mystery collectible. It remains prototype art. See [Docs/ORIGIN_WEB_DEMO_03.md](Docs/ORIGIN_WEB_DEMO_03.md) for scope and validation.
 
+Visual Upgrade 0.4 Phase 0–3 adds a ScriptableObject prefab/material catalog, procedural fallback resolution, tropical material/lighting foundations, four-way terrain blending and GPU water animation. No production 3D models are included yet. See [Docs/VISUAL_UPGRADE_04_PLAN.md](Docs/VISUAL_UPGRADE_04_PLAN.md).
+
 ## Requirements
 
 - Unity **6.3 LTS (`6000.3.27f1`)** on this branch; Unity Editor validation is still required

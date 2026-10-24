@@ -177,6 +177,7 @@ namespace IslandSurvival.World
         {
             const int xSegments = 32, zSegments = 32;
             var vertices = new List<Vector3>((xSegments + 1) * (zSegments + 1));
+            var colors = new List<Color>((xSegments + 1) * (zSegments + 1));
             var triangles = new List<int>(xSegments * zSegments * 6);
             for (var z = 0; z <= zSegments; z++)
             for (var x = 0; x <= xSegments; x++)
@@ -189,9 +190,18 @@ namespace IslandSurvival.World
                 var start = grassOnly ? 25f + Mathf.Sin(px * 0.11f) * 3.5f : ShoreZ(px);
                 var pz = Mathf.Lerp(start, grassOnly ? 330f : 334f, t);
                 vertices.Add(new Vector3(px, GroundHeight(px, pz) + (grassOnly ? 0.045f : 0f), pz));
+                var distanceFromShore = pz - ShoreZ(px);
+                var wet = 1f - Mathf.SmoothStep(0f, 9f, distanceFromShore);
+                var inland = Mathf.SmoothStep(18f, 48f, distanceFromShore);
+                var patch = Mathf.PerlinNoise(px * 0.025f + 10f, pz * 0.022f + 20f);
+                var dirt = inland * Mathf.SmoothStep(0.56f, 0.78f, patch) * 0.72f;
+                var grassWeight = inland * (1f - dirt);
+                var dry = Mathf.Max(0f, 1f - wet - grassWeight - dirt);
+                var total = Mathf.Max(0.0001f, dry + wet + grassWeight + dirt);
+                colors.Add(new Color(dry / total, wet / total, grassWeight / total, dirt / total));
             }
             AddGridTriangles(triangles, xSegments, zSegments);
-            return Build(grassOnly ? "Organic Grass Transition" : "Organic Starting Beach", vertices, triangles);
+            return Build(grassOnly ? "Organic Grass Transition" : "Organic Starting Beach", vertices, triangles, colors);
         }
 
         static void AddGridTriangles(List<int> triangles, int xSegments, int zSegments)
@@ -230,10 +240,11 @@ namespace IslandSurvival.World
             triangles.Add(d); triangles.Add(c); triangles.Add(b);
         }
 
-        static Mesh Build(string name, List<Vector3> vertices, List<int> triangles)
+        static Mesh Build(string name, List<Vector3> vertices, List<int> triangles, List<Color> colors = null)
         {
             var mesh = new Mesh { name = name };
             mesh.SetVertices(vertices); mesh.SetTriangles(triangles, 0);
+            if (colors != null && colors.Count == vertices.Count) mesh.SetColors(colors);
             mesh.RecalculateNormals(); mesh.RecalculateBounds();
             return mesh;
         }

@@ -64,7 +64,7 @@ The continuous terrain, lightweight discovery triggers, gameplay resource nodes,
 - Palm LOD groups and lower Web vegetation density.
 - Zone activation/unload with hysteresis.
 - Opaque solid vegetation; no alpha-card forest.
-- Water meshes update approximately 12 times per second instead of every rendered frame.
+- Visual Upgrade 0.4 Phase 3 moves ocean, lagoon, stream, foam and waterfall motion to a lightweight GPU shader; active water no longer recalculates mesh normals on the CPU.
 - No realtime reflections, post-processing stack, additional realtime lights, or desktop-only shader features.
 - One directional light; platform shadow distance/profile remains authoritative.
 - Small mesh counts and no new textures, avoiding Web texture memory growth.
