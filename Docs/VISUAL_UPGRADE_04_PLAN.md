@@ -38,9 +38,9 @@ In Unity 6.3.27f1:
 1. Open `Prototype_StartingBeach`, enter Play Mode and stand at spawn with the initial camera unchanged.
 2. Run **Island Survival → Visual → Capture 10 Second Baseline**.
 3. Do not move the camera during the sample.
-4. Copy the `VISUAL_BASELINE_04` Console line into the test record.
+4. Copy the `VISUAL_BASELINE_04` Console line into the test record. It reports frame-delta-derived average FPS, low-5%-FPS and total allocated memory.
 5. Repeat at the wreck looking inland and at the first dense vegetation edge.
-6. Use Unity Profiler for CPU/GPU/GC evidence; Editor values are diagnostic, not device acceptance.
+6. Use Unity Profiler for batches, triangles, CPU/GPU timing and GC evidence; these metrics are not fabricated by the baseline probe. Editor values are diagnostic, not device acceptance.
 7. Build Web/PWA, repeat the fixed route on iPhone Safari and record device/iOS, sustained FPS, peak memory symptoms, load time and any tab reload.
 
 Target remains sustained 30 FPS on the chosen Web/iPhone test device. Budgets must be tuned from measured evidence rather than invented cloud figures.
