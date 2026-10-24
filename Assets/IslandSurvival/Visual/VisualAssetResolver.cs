@@ -24,8 +24,9 @@ namespace IslandSurvival.Visual
         public GameObject CreatePresentation(VisualAssetKey key, Transform parent, string gameplayIdentity, Func<Transform, GameObject> proceduralFallback)
         {
             GameObject visual;
-            GameObject prefab;
-            var isFallback = catalog == null || !catalog.TryGetPrefab(key, out prefab);
+            GameObject prefab = null;
+            var hasPrefab = catalog != null && catalog.TryGetPrefab(key, out prefab);
+            var isFallback = !hasPrefab;
             if (isFallback)
             {
                 if (proceduralFallback == null) return null;
