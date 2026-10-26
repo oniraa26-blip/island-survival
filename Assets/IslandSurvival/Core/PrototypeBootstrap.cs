@@ -10,6 +10,7 @@ using IslandSurvival.Items;
 using IslandSurvival.Localization;
 using IslandSurvival.Player;
 using IslandSurvival.Platform;
+using IslandSurvival.Presentation;
 using IslandSurvival.Save;
 using IslandSurvival.Survival;
 using IslandSurvival.Streaming;
@@ -41,6 +42,7 @@ namespace IslandSurvival.Core
             Screen.autorotateToLandscapeRight = true;
             Screen.orientation = ScreenOrientation.AutoRotation;
             ServiceRegistry.Tuning = new PrototypeTuning();
+            PresentationRuntime.Mode = ServiceRegistry.Tuning.presentationMode;
             ServiceRegistry.Platform = PlatformProfile.Detect();
             PlatformQualityController.Apply(ServiceRegistry.Platform);
             ServiceRegistry.Visuals = VisualAssetResolver.Load(ServiceRegistry.Platform);
@@ -66,7 +68,16 @@ namespace IslandSurvival.Core
             var cameraObject = new GameObject("Main Camera"); cameraObject.tag = "MainCamera"; var camera = cameraObject.AddComponent<UnityEngine.Camera>(); camera.nearClipPlane = 0.15f; camera.farClipPlane = 250f;
             TropicalDaylightProfile.Apply(ServiceRegistry.Visuals.Daylight, ServiceRegistry.Platform, sun, camera);
             PlatformQualityController.Apply(ServiceRegistry.Platform, camera);
-            var cameraFollow = cameraObject.AddComponent<ThirdPersonCamera>(); cameraFollow.Initialize(playerObject.transform, input, ServiceRegistry.Tuning);
+            if (PresentationRuntime.IsTwoPointFiveD)
+            {
+                var cameraFollow = cameraObject.AddComponent<IsometricCameraController>();
+                cameraFollow.Initialize(playerObject.transform, ServiceRegistry.Tuning);
+            }
+            else
+            {
+                var cameraFollow = cameraObject.AddComponent<ThirdPersonCamera>();
+                cameraFollow.Initialize(playerObject.transform, input, ServiceRegistry.Tuning);
+            }
             var player = playerObject.AddComponent<PlayerController>(); player.Initialize(input, camera, ServiceRegistry.Tuning, ServiceRegistry.Survival); ServiceRegistry.Player = player;
             demoWorld.BindPlayer(playerObject.transform);
             var interactor = playerObject.AddComponent<PlayerInteractor>(); interactor.Initialize(input, ServiceRegistry.Tuning.interactionRadius);

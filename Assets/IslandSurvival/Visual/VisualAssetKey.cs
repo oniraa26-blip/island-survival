@@ -17,7 +17,25 @@ namespace IslandSurvival.Visual
         PickupCoconut,
         PickupWood,
         Campfire,
-        LeafBed
+        LeafBed,
+        PlayerStarter,
+        PalmA,
+        PalmB,
+        PalmC,
+        TropicalTreeA,
+        BushA,
+        GrassA,
+        RockSmall,
+        RockMedium,
+        RockLarge,
+        HouseLevel1Default,
+        HouseLevel1Tropical,
+        Chest,
+        Barrel,
+        CraftTable,
+        ResourceWood,
+        ResourceStone,
+        Rowboat
     }
 
     public enum VisualMaterialKey

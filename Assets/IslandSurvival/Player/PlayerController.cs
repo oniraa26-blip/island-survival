@@ -1,5 +1,6 @@
 using IslandSurvival.Core;
 using IslandSurvival.InputSystem;
+using IslandSurvival.Presentation;
 using IslandSurvival.Survival;
 using UnityEngine;
 
@@ -14,12 +15,17 @@ namespace IslandSurvival.Player
         PrototypeTuning tuning;
         SurvivalModel survival;
         Vector3 planarVelocity;
+        SpriteWorldVisual spriteVisual;
         float verticalVelocity;
         public bool IsSprinting { get; private set; }
         public bool IsGrounded { get; private set; }
 
         public void Initialize(MobileInput input, UnityEngine.Camera camera, PrototypeTuning tuning, SurvivalModel survival)
-        { this.input = input; cameraTransform = camera.transform; this.tuning = tuning; this.survival = survival; controller = GetComponent<CharacterController>(); }
+        {
+            this.input = input; cameraTransform = camera.transform; this.tuning = tuning; this.survival = survival;
+            controller = GetComponent<CharacterController>();
+            spriteVisual = GetComponentInChildren<SpriteWorldVisual>(true);
+        }
 
         void Update()
         {
@@ -35,7 +41,10 @@ namespace IslandSurvival.Player
             IsSprinting = input.SprintHeld && desired.sqrMagnitude > 0.1f && survival.Stamina > 0f;
             var speed = IsSprinting ? tuning.sprintSpeed : tuning.walkSpeed;
             if (desired.sqrMagnitude > 0.01f)
+            {
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desired), tuning.turnSpeed * Time.deltaTime);
+                if (spriteVisual != null) spriteVisual.SetDirectionFromWorldMovement(desired);
+            }
 
             var targetPlanarVelocity = desired * speed;
             if (IsGrounded)

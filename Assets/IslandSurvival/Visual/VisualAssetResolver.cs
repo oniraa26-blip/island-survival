@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using IslandSurvival.Platform;
+using IslandSurvival.Presentation;
 using UnityEngine;
 
 namespace IslandSurvival.Visual
@@ -24,6 +25,22 @@ namespace IslandSurvival.Visual
         public GameObject CreatePresentation(VisualAssetKey key, Transform parent, string gameplayIdentity, Func<Transform, GameObject> proceduralFallback)
         {
             GameObject visual;
+            SpriteVisualDefinition spriteDefinition;
+            Sprite authoredSprite;
+            if (PresentationRuntime.IsTwoPointFiveD && catalog != null
+                && catalog.TryGetSpriteVisual(key, out spriteDefinition)
+                && spriteDefinition.Idle.TryGet(SpriteDirection.S, out authoredSprite))
+            {
+                visual = new GameObject("2.5D " + key);
+                visual.transform.SetParent(parent, false);
+                var worldVisual = visual.AddComponent<SpriteWorldVisual>();
+                worldVisual.Initialize(spriteDefinition, authoredSprite,
+                    key == VisualAssetKey.PlayerCharacter ? SpriteSortCategory.Character : SpriteSortCategory.WorldObject,
+                    key == VisualAssetKey.PlayerCharacter);
+                var authoredMarker = visual.AddComponent<VisualPrefabInstance>();
+                authoredMarker.Initialize(key, gameplayIdentity, false);
+                return visual;
+            }
             GameObject prefab = null;
             var hasPrefab = catalog != null && catalog.TryGetPrefab(key, out prefab);
             var isFallback = !hasPrefab;
@@ -43,6 +60,8 @@ namespace IslandSurvival.Visual
             if (marker == null) marker = visual.AddComponent<VisualPrefabInstance>();
             marker.Initialize(key, gameplayIdentity, isFallback);
             quality.Apply(visual, key);
+            if (PresentationRuntime.IsTwoPointFiveD)
+                TwoPointFiveDVisualAdapter.Attach(visual, key);
             return visual;
         }
 

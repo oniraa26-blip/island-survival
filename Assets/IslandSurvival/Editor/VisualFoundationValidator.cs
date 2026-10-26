@@ -27,6 +27,8 @@ namespace IslandSurvival.Editor
             {
                 failures += ValidateUnique(catalog.Prefabs, entry => entry.key.ToString(), "prefab");
                 failures += ValidateUnique(catalog.Materials, entry => entry.key.ToString(), "material");
+                failures += ValidateUnique(catalog.SpriteVisuals, entry => entry.AssetKey.ToString(), "2.5D sprite visual");
+                failures += ValidateUnique(catalog.BuildingVisuals, entry => entry.BuildingId, "2.5D building visual");
                 foreach (var entry in catalog.Prefabs)
                     if (entry != null && entry.prefab != null) failures += ValidatePresentationOnly(entry);
             }

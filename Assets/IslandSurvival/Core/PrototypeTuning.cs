@@ -1,4 +1,5 @@
 using System;
+using IslandSurvival.Presentation;
 using UnityEngine;
 
 namespace IslandSurvival.Core
@@ -15,10 +16,17 @@ namespace IslandSurvival.Core
         [Range(0f, 1f)] public float airControl = 0.35f;
         [Min(0.1f)] public float groundedStickForce = 2f;
         [Header("Camera")]
+        public PresentationMode presentationMode = PresentationMode.TwoPointFiveD;
         public float cameraDistance = 6f;
         public float cameraSensitivity = 0.16f;
         public float minPitch = 12f;
         public float maxPitch = 65f;
+        [Header("2.5D Camera")]
+        [Range(35f, 45f)] public float isometricPitch = 40f;
+        public float isometricYaw = 45f;
+        [Min(1f)] public float isometricSize = 7.5f;
+        [Min(0f)] public float isometricFollowDamping = 0.12f;
+        public float isometricLookAhead = 1.25f;
         [Header("Interaction")]
         public float interactionRadius = 3f;
         [Header("Survival")]
