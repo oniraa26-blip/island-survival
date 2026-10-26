@@ -6,6 +6,16 @@ namespace IslandSurvival.Tests
 {
     public sealed class MinimapTests
     {
+        [TestCase(0f, 0f)]
+        [TestCase(90f, -90f)]
+        [TestCase(180f, -180f)]
+        [TestCase(270f, 90f)]
+        public void PlayerArrowUsesNorthUpWorldFacing(float worldYaw, float expectedRotation)
+        {
+            var forward = Quaternion.Euler(0f, worldYaw, 0f) * Vector3.forward;
+            Assert.AreEqual(expectedRotation, MinimapProjection.PlayerArrowRotation(forward), 0.001f);
+        }
+
         [Test]
         public void RegistryAllowsOneLocalAndThreeTeammates()
         {

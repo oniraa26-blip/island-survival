@@ -48,7 +48,8 @@ namespace IslandSurvival.Presentation
 
         public void SetDirectionFromWorldMovement(Vector3 movement)
         {
-            var next = SpriteDirectionResolver.FromMovement(new Vector2(movement.x, movement.z));
+            if (cameraTransform == null && UnityEngine.Camera.main != null) cameraTransform = UnityEngine.Camera.main.transform;
+            var next = SpriteDirectionResolver.FromWorldMovement(movement, cameraTransform);
             if (next == direction) return;
             direction = next;
             Sprite sprite;

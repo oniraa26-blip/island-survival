@@ -90,7 +90,7 @@ namespace IslandSurvival.UI
                 }
                 else view.localScale = Vector3.one;
                 view.anchoredPosition = normalized * radius;
-                if (marker.Category == MinimapMarkerCategory.Player) view.localEulerAngles = new Vector3(0f, 0f, -player.eulerAngles.y);
+                if (marker.Category == MinimapMarkerCategory.Player) view.localEulerAngles = new Vector3(0f, 0f, MinimapProjection.PlayerArrowRotation(player.forward));
             }
         }
 
@@ -148,6 +148,11 @@ namespace IslandSurvival.UI
 
     public static class MinimapProjection
     {
+        public static float PlayerArrowRotation(Vector3 worldForward)
+        {
+            return -Mathf.Atan2(worldForward.x, worldForward.z) * Mathf.Rad2Deg;
+        }
+
         public static Vector2 Project(Vector3 markerPosition, Vector3 playerPosition, float range, out bool outside)
         {
             var delta = markerPosition - playerPosition;

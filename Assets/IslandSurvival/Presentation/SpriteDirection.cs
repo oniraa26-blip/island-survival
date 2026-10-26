@@ -6,6 +6,22 @@ namespace IslandSurvival.Presentation
 
     public static class SpriteDirectionResolver
     {
+        public static SpriteDirection FromWorldMovement(Vector3 movement, Transform viewTransform)
+        {
+            if (viewTransform == null) return FromMovement(new Vector2(movement.x, movement.z));
+
+            var screenRight = viewTransform.right;
+            screenRight.y = 0f;
+            screenRight.Normalize();
+            var screenUp = viewTransform.forward;
+            screenUp.y = 0f;
+            screenUp.Normalize();
+
+            return FromMovement(new Vector2(
+                Vector3.Dot(movement, screenRight),
+                Vector3.Dot(movement, screenUp)));
+        }
+
         public static SpriteDirection FromMovement(Vector2 movement)
         {
             if (movement.sqrMagnitude < 0.0001f) return SpriteDirection.S;

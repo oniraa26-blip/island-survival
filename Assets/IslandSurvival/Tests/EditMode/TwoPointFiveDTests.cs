@@ -18,6 +18,28 @@ namespace IslandSurvival.Tests
         public void DirectionResolverCoversEightDirections(float x, float y, SpriteDirection expected)
         { Assert.AreEqual(expected, SpriteDirectionResolver.FromMovement(new Vector2(x, y))); }
 
+        [TestCase(0f, 1f, SpriteDirection.N)]
+        [TestCase(0f, -1f, SpriteDirection.S)]
+        [TestCase(-1f, 0f, SpriteDirection.W)]
+        [TestCase(1f, 0f, SpriteDirection.E)]
+        [TestCase(-1f, 1f, SpriteDirection.NW)]
+        [TestCase(1f, 1f, SpriteDirection.NE)]
+        [TestCase(-1f, -1f, SpriteDirection.SW)]
+        [TestCase(1f, -1f, SpriteDirection.SE)]
+        public void CameraRelativeMovementResolvesAllScreenDirections(float screenX, float screenY, SpriteDirection expected)
+        {
+            var camera = new GameObject("IsometricCamera");
+            try
+            {
+                camera.transform.rotation = Quaternion.Euler(40f, 45f, 0f);
+                var right = camera.transform.right; right.y = 0f; right.Normalize();
+                var up = camera.transform.forward; up.y = 0f; up.Normalize();
+                var worldMovement = right * screenX + up * screenY;
+                Assert.AreEqual(expected, SpriteDirectionResolver.FromWorldMovement(worldMovement, camera.transform));
+            }
+            finally { Object.DestroyImmediate(camera); }
+        }
+
         [Test]
         public void SortingPlacesNearObjectInFrontOfFarObject()
         {
