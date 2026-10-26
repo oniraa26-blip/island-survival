@@ -39,6 +39,7 @@ namespace IslandSurvival.Player
             var desired = forward * input.Move.y + right * input.Move.x;
             desired = Vector3.ClampMagnitude(desired, 1f);
             IsSprinting = input.SprintHeld && desired.sqrMagnitude > 0.1f && survival.Stamina > 0f;
+            if (spriteVisual != null) spriteVisual.SetMovement(desired.sqrMagnitude > 0.01f, IsSprinting);
             var speed = IsSprinting ? tuning.sprintSpeed : tuning.walkSpeed;
             if (desired.sqrMagnitude > 0.01f)
             {

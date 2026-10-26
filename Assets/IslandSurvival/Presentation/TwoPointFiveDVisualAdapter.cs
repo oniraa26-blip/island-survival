@@ -26,7 +26,7 @@ namespace IslandSurvival.Presentation
             root.transform.SetParent(fallbackVisual.transform, false);
             root.transform.position = new Vector3(fallbackVisual.transform.position.x, groundWorldY, fallbackVisual.transform.position.z);
             var worldVisual = root.AddComponent<SpriteWorldVisual>();
-            worldVisual.Initialize(GetSprite(key, spec.color), spec.size, key == VisualAssetKey.PlayerCharacter ? SpriteSortCategory.Character : SpriteSortCategory.WorldObject, key == VisualAssetKey.PlayerCharacter);
+            worldVisual.Initialize(GetSprite(key, spec.color), spec.size, key == VisualAssetKey.PlayerCharacter ? SpriteSortCategory.Character : SpriteSortCategory.WorldObject, key == VisualAssetKey.PlayerCharacter, key);
 
             if (!spec.shadow) return;
             var shadow = new GameObject("Blob Shadow");
@@ -43,6 +43,7 @@ namespace IslandSurvival.Presentation
         static Sprite GetSprite(VisualAssetKey key, Color color)
         {
             Sprite sprite;
+            if (PresentationRuntime.PlaceholderArtEnabled && TemporaryArtLibrary.TryGet(key, SpriteDirection.S, out sprite)) return sprite;
             if (Sprites.TryGetValue(key, out sprite) && sprite != null) return sprite;
             const int width = 32, height = 48;
             var texture = new Texture2D(width, height, TextureFormat.RGBA32, false) { name = "Fallback2D_" + key, filterMode = FilterMode.Bilinear, wrapMode = TextureWrapMode.Clamp };
@@ -81,11 +82,21 @@ namespace IslandSurvival.Presentation
             switch (key)
             {
                 case VisualAssetKey.PlayerCharacter: return new VisualSpec(new Vector2(1.1f, 2.15f), new Color(0.96f, 0.43f, 0.13f), true);
-                case VisualAssetKey.PalmTree: return new VisualSpec(new Vector2(4.5f, 7.5f), new Color(0.12f, 0.55f, 0.22f), true);
-                case VisualAssetKey.TropicalTree: return new VisualSpec(new Vector2(4.8f, 6.2f), new Color(0.08f, 0.42f, 0.18f), true);
-                case VisualAssetKey.Bush: return new VisualSpec(new Vector2(2.2f, 1.6f), new Color(0.18f, 0.62f, 0.25f), true);
-                case VisualAssetKey.GrassCluster: return new VisualSpec(new Vector2(1.1f, 0.8f), new Color(0.32f, 0.7f, 0.28f), false);
-                case VisualAssetKey.Rock: return new VisualSpec(new Vector2(2.1f, 1.35f), new Color(0.48f, 0.5f, 0.45f), true);
+                case VisualAssetKey.PalmTree:
+                case VisualAssetKey.PalmA:
+                case VisualAssetKey.PalmB:
+                case VisualAssetKey.PalmC: return new VisualSpec(new Vector2(4.5f, 7.5f), new Color(0.12f, 0.55f, 0.22f), true);
+                case VisualAssetKey.TropicalTree:
+                case VisualAssetKey.TropicalTreeA: return new VisualSpec(new Vector2(4.8f, 6.2f), new Color(0.08f, 0.42f, 0.18f), true);
+                case VisualAssetKey.Bush:
+                case VisualAssetKey.BushA: return new VisualSpec(new Vector2(2.2f, 1.6f), new Color(0.18f, 0.62f, 0.25f), true);
+                case VisualAssetKey.GrassCluster:
+                case VisualAssetKey.GrassA: return new VisualSpec(new Vector2(1.1f, 0.8f), new Color(0.32f, 0.7f, 0.28f), false);
+                case VisualAssetKey.Rock:
+                case VisualAssetKey.RockMedium: return new VisualSpec(new Vector2(2.1f, 1.35f), new Color(0.48f, 0.5f, 0.45f), true);
+                case VisualAssetKey.RockSmall: return new VisualSpec(new Vector2(0.9f, 0.65f), new Color(0.48f, 0.5f, 0.45f), true);
+                case VisualAssetKey.RockLarge:
+                case VisualAssetKey.RockCoastal: return new VisualSpec(new Vector2(4.2f, 3.2f), new Color(0.48f, 0.5f, 0.45f), true);
                 case VisualAssetKey.Shipwreck: return new VisualSpec(new Vector2(8f, 5f), new Color(0.45f, 0.24f, 0.1f), true);
                 default: return new VisualSpec(new Vector2(0.8f, 0.8f), new Color(0.94f, 0.75f, 0.28f), true);
             }

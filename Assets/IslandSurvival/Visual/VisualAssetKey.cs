@@ -35,7 +35,17 @@ namespace IslandSurvival.Visual
         CraftTable,
         ResourceWood,
         ResourceStone,
-        Rowboat
+        Rowboat,
+        FlowerA,
+        RockCoastal,
+        PropCrate,
+        PropDriftwood,
+        PropRope,
+        FarmSoilDry,
+        FarmSoilWet,
+        CropTestStage1,
+        CropTestStage2,
+        CropTestStage3
     }
 
     public enum VisualMaterialKey

@@ -194,7 +194,9 @@ namespace IslandSurvival.World
                 var wet = 1f - Mathf.SmoothStep(0f, 9f, distanceFromShore);
                 var inland = Mathf.SmoothStep(18f, 48f, distanceFromShore);
                 var patch = Mathf.PerlinNoise(px * 0.025f + 10f, pz * 0.022f + 20f);
-                var dirt = inland * Mathf.SmoothStep(0.56f, 0.78f, patch) * 0.72f;
+                var pathCenter = Mathf.Sin(pz * 0.026f) * 7f;
+                var inlandPath = inland * (1f - Mathf.SmoothStep(3.2f, 9.5f, Mathf.Abs(px - pathCenter))) * 0.82f;
+                var dirt = Mathf.Max(inlandPath, inland * Mathf.SmoothStep(0.56f, 0.78f, patch) * 0.58f);
                 var grassWeight = inland * (1f - dirt);
                 var dry = Mathf.Max(0f, 1f - wet - grassWeight - dirt);
                 var total = Mathf.Max(0.0001f, dry + wet + grassWeight + dirt);

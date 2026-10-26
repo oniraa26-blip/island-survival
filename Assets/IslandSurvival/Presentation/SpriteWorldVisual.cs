@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Rendering;
+using IslandSurvival.Visual;
 
 namespace IslandSurvival.Presentation
 {
@@ -12,12 +13,17 @@ namespace IslandSurvival.Presentation
         SortingGroup sortingGroup;
         Transform cameraTransform;
         SpriteDirectionSet directionSet;
+        VisualAssetKey assetKey;
         SpriteDirection direction = SpriteDirection.S;
+        bool moving;
+        bool sprinting;
+        int animationFrame = -1;
 
         public SpriteDirection Direction { get { return direction; } }
 
-        public void Initialize(Sprite sprite, Vector2 worldSize, SpriteSortCategory sortCategory, bool isDynamic)
+        public void Initialize(Sprite sprite, Vector2 worldSize, SpriteSortCategory sortCategory, bool isDynamic, VisualAssetKey key = VisualAssetKey.None)
         {
+            assetKey = key;
             category = sortCategory;
             dynamicVisual = isDynamic;
             spriteRenderer = GetComponent<SpriteRenderer>();
@@ -36,7 +42,7 @@ namespace IslandSurvival.Presentation
         public void Initialize(SpriteVisualDefinition definition, Sprite sprite, SpriteSortCategory sortCategory, bool isDynamic)
         {
             directionSet = definition != null ? definition.Idle : null;
-            Initialize(sprite, definition != null ? definition.WorldSize : Vector2.one, sortCategory, isDynamic);
+            Initialize(sprite, definition != null ? definition.WorldSize : Vector2.one, sortCategory, isDynamic, definition != null ? definition.AssetKey : VisualAssetKey.None);
         }
 
         public void SetDirectionFromWorldMovement(Vector3 movement)
@@ -45,10 +51,37 @@ namespace IslandSurvival.Presentation
             if (next == direction) return;
             direction = next;
             Sprite sprite;
-            if (directionSet != null && directionSet.TryGet(direction, out sprite) && spriteRenderer != null) spriteRenderer.sprite = sprite;
+            if (spriteRenderer == null) return;
+            if (directionSet != null && directionSet.TryGet(direction, out sprite)) spriteRenderer.sprite = sprite;
+            else if (PresentationRuntime.PlaceholderArtEnabled && TemporaryArtLibrary.TryGet(assetKey, direction, out sprite)) spriteRenderer.sprite = sprite;
         }
 
-        void LateUpdate() { Refresh(false); }
+        public void SetMovement(bool isMoving, bool isSprinting)
+        {
+            if (moving == isMoving && sprinting == isSprinting) return;
+            moving = isMoving; sprinting = isSprinting; animationFrame = -1;
+            if (!moving) ApplyIdleSprite();
+        }
+
+        void LateUpdate()
+        {
+            Refresh(false);
+            if (dynamicVisual && moving && assetKey == VisualAssetKey.PlayerCharacter)
+            {
+                var frame = Mathf.FloorToInt(Time.unscaledTime * (sprinting ? 8f : 5f)) & 1;
+                if (frame != animationFrame)
+                {
+                    animationFrame = frame; Sprite sprite;
+                    if (TemporaryArtLibrary.TryGetWalk(direction, frame, out sprite) && spriteRenderer != null) spriteRenderer.sprite = sprite;
+                }
+            }
+        }
+
+        void ApplyIdleSprite()
+        {
+            Sprite sprite;
+            if (spriteRenderer != null && TemporaryArtLibrary.TryGet(assetKey, direction, out sprite)) spriteRenderer.sprite = sprite;
+        }
 
         void Refresh(bool force)
         {

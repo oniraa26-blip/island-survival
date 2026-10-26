@@ -84,3 +84,7 @@ Use the shared sprite material. Grounding shadows are low-cost translucent blob 
 5. Shared material and atlas-ready texture.
 6. Test front/behind sorting from Starting Beach camera.
 7. Test WebGL/iPhone memory and clarity before increasing resolution.
+
+## Phase 02 source layout
+
+Use `Assets/IslandSurvival/Art2D` for approved production sources, grouped into Characters, Environment, Buildings, Props, Story, Farming, FX, UI and Atlases. Runtime-loadable temporary proof art is isolated under `Resources/Art2D/Temporary` and must not become an implicit production dependency.
