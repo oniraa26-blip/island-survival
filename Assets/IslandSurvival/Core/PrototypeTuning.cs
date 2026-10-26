@@ -24,7 +24,7 @@ namespace IslandSurvival.Core
         [Header("2.5D Camera")]
         [Range(35f, 45f)] public float isometricPitch = 40f;
         public float isometricYaw = 45f;
-        [Min(1f)] public float isometricSize = 7.5f;
+        [Min(1f)] public float isometricSize = 11.5f;
         [Min(0f)] public float isometricFollowDamping = 0.12f;
         public float isometricLookAhead = 1.25f;
         [Header("Interaction")]

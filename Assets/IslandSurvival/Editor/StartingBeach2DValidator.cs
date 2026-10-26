@@ -1,4 +1,5 @@
 using System;
+using IslandSurvival.Core;
 using IslandSurvival.Presentation;
 using IslandSurvival.Visual;
 using IslandSurvival.World;
@@ -32,6 +33,9 @@ namespace IslandSurvival.Editor
             var failures = 0;
             if (!PresentationRuntime.IsTwoPointFiveD) { Debug.LogError("PresentationMode.TwoPointFiveD must be active."); failures++; }
             if (!PresentationRuntime.PlaceholderArtEnabled) { Debug.LogError("Phase 02 placeholder art is disabled."); failures++; }
+            var tuning = new PrototypeTuning();
+            if (tuning.isometricSize < 10f || Mathf.Abs(StylizedGeometry.ShoreZ(0f)) > tuning.isometricSize)
+            { Debug.LogError("Initial 2.5D viewport does not include enough of the Starting Beach shoreline/composition."); failures++; }
             foreach (var key in Required)
             {
                 Sprite sprite;

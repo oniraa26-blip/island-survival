@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using IslandSurvival.Core;
 using IslandSurvival.Presentation;
 using IslandSurvival.Platform;
 using IslandSurvival.Visual;
+using IslandSurvival.World;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -93,6 +95,14 @@ namespace IslandSurvival.Tests
             var position = new Vector3(12.5f, 0f, 31.25f); var forward = new Vector3(1f, -1f, 1f).normalized;
             Assert.AreEqual(SpriteWorldSorting.Calculate(position, forward, SpriteSortCategory.WorldObject),
                 SpriteWorldSorting.Calculate(position, forward, SpriteSortCategory.WorldObject));
+        }
+
+        [Test]
+        public void InitialViewportIncludesStartingShoreline()
+        {
+            var tuning = new PrototypeTuning();
+            Assert.GreaterOrEqual(tuning.isometricSize, 10f);
+            Assert.Less(Mathf.Abs(StylizedGeometry.ShoreZ(0f)), tuning.isometricSize);
         }
     }
 }

@@ -18,6 +18,8 @@ Existing freeform terrain, curved shoreline, GPU water and foam remain authorita
 
 The house and farming proofs contain no gameplay/save components. They demonstrate presentation substitution only.
 
+The initial orthographic viewport and Starting Beach cluster are composed around the player spawn: shoreline at roughly world Z -6, story landmark and first rock/palm silhouettes within the initial exploration radius, with house/farming proofs slightly inland. This prevents the original large 3D-demo spacing from presenting as an empty sand viewport.
+
 ## Performance
 
 - Two 1254×1254 RGBA atlases; no 4K placeholder textures.
