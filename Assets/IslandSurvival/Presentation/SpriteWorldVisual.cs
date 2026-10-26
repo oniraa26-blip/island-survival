@@ -14,6 +14,7 @@ namespace IslandSurvival.Presentation
         Transform cameraTransform;
         SpriteDirectionSet directionSet;
         VisualAssetKey assetKey;
+        Vector2 targetWorldSize;
         SpriteDirection direction = SpriteDirection.S;
         bool moving;
         bool sprinting;
@@ -24,6 +25,7 @@ namespace IslandSurvival.Presentation
         public void Initialize(Sprite sprite, Vector2 worldSize, SpriteSortCategory sortCategory, bool isDynamic, VisualAssetKey key = VisualAssetKey.None)
         {
             assetKey = key;
+            targetWorldSize = worldSize;
             category = sortCategory;
             dynamicVisual = isDynamic;
             spriteRenderer = GetComponent<SpriteRenderer>();
@@ -33,8 +35,7 @@ namespace IslandSurvival.Presentation
             if (sortingGroup == null) sortingGroup = gameObject.AddComponent<SortingGroup>();
             if (sprite != null)
             {
-                var spriteSize = sprite.bounds.size;
-                transform.localScale = new Vector3(worldSize.x / Mathf.Max(0.01f, spriteSize.x), worldSize.y / Mathf.Max(0.01f, spriteSize.y), 1f);
+                ApplyWorldScale();
             }
             Refresh(true);
         }
@@ -87,10 +88,22 @@ namespace IslandSurvival.Presentation
         {
             if (cameraTransform == null && UnityEngine.Camera.main != null) cameraTransform = UnityEngine.Camera.main.transform;
             if (cameraTransform == null) return;
+            ApplyWorldScale();
             transform.rotation = cameraTransform.rotation;
             if (sortingGroup == null) sortingGroup = GetComponent<SortingGroup>();
             if (sortingGroup != null) sortingGroup.sortingOrder = SpriteWorldSorting.Calculate(transform.position, cameraTransform.forward, category);
             if (!dynamicVisual && !force) enabled = false;
+        }
+
+        void ApplyWorldScale()
+        {
+            if (spriteRenderer == null || spriteRenderer.sprite == null) return;
+            var spriteSize = spriteRenderer.sprite.bounds.size;
+            var parentScale = transform.parent != null ? transform.parent.lossyScale : Vector3.one;
+            transform.localScale = new Vector3(
+                targetWorldSize.x / Mathf.Max(0.01f, spriteSize.x * Mathf.Abs(parentScale.x)),
+                targetWorldSize.y / Mathf.Max(0.01f, spriteSize.y * Mathf.Abs(parentScale.y)),
+                1f / Mathf.Max(0.01f, Mathf.Abs(parentScale.z)));
         }
     }
 }

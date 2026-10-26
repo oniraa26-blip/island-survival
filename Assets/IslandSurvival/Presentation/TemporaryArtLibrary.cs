@@ -6,6 +6,7 @@ namespace IslandSurvival.Presentation
 {
     public static class TemporaryArtLibrary
     {
+        public const float PixelsPerUnit = 100f;
         const string StartingAtlasPath = "Art2D/Temporary/StartingBeachAtlas";
         const string DirectionalAtlasPath = "Art2D/Temporary/DirectionalAtlas";
         const string WalkAtlasPath = "Art2D/Temporary/ExplorerWalkAtlas";
@@ -42,7 +43,7 @@ namespace IslandSurvival.Presentation
             var x1 = Mathf.RoundToInt(texture.width * (column + 1) / 4f);
             var yTop = Mathf.RoundToInt(texture.height * (4 - row) / 4f);
             var yBottom = Mathf.RoundToInt(texture.height * (3 - row) / 4f);
-            var sprite = Sprite.Create(texture, new Rect(x0, yBottom, x1 - x0, yTop - yBottom), new Vector2(0.5f, 0.04f), 100f, 0, SpriteMeshType.FullRect);
+            var sprite = Sprite.Create(texture, new Rect(x0, yBottom, x1 - x0, yTop - yBottom), new Vector2(0.5f, 0.04f), PixelsPerUnit, 0, SpriteMeshType.FullRect);
             sprite.name = name; return sprite;
         }
 

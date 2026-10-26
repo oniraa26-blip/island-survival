@@ -81,7 +81,7 @@ namespace IslandSurvival.Presentation
         {
             switch (key)
             {
-                case VisualAssetKey.PlayerCharacter: return new VisualSpec(new Vector2(1.1f, 2.15f), new Color(0.96f, 0.43f, 0.13f), true);
+                case VisualAssetKey.PlayerCharacter: return new VisualSpec(new Vector2(1.25f, 2.5f), new Color(0.96f, 0.43f, 0.13f), true);
                 case VisualAssetKey.PalmTree:
                 case VisualAssetKey.PalmA:
                 case VisualAssetKey.PalmB:

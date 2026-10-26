@@ -42,9 +42,9 @@ namespace IslandSurvival.UI
             safeArea = Panel("SafeArea", transform, new Color(0, 0, 0, 0), Vector2.zero, Vector2.one).GetComponent<RectTransform>();
             stats = Label("Stats", safeArea, "", 28, TextAnchor.UpperLeft, new Vector2(18, -16), new Vector2(390, 185));
             plan = LocalizedLabel("Plan", safeArea, "ui.survival_plan", 27, TextAnchor.UpperCenter, new Vector2(-250, -16), new Vector2(500, 90)); Anchor(plan.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
-            phase = Label("Phase", safeArea, "", 25, TextAnchor.UpperRight, new Vector2(-300, -18), new Vector2(280, 55)); Anchor(phase.rectTransform, Vector2.one, Vector2.one);
-            var settings = Button("Settings", safeArea, "ui.settings", new Vector2(-330, -75), new Vector2(140, 62), ToggleSettings); Anchor(settings.GetComponent<RectTransform>(), Vector2.one, Vector2.one);
-            var inventoryButton = Button("Inventory", safeArea, "ui.bag", new Vector2(-170, -75), new Vector2(140, 62), ToggleInventory); Anchor(inventoryButton.GetComponent<RectTransform>(), Vector2.one, Vector2.one);
+            phase = Label("Phase", safeArea, "", 25, TextAnchor.UpperRight, new Vector2(-620, -18), new Vector2(280, 55)); Anchor(phase.rectTransform, Vector2.one, Vector2.one);
+            var settings = Button("Settings", safeArea, "ui.settings", new Vector2(-330, -390), new Vector2(140, 62), ToggleSettings); Anchor(settings.GetComponent<RectTransform>(), Vector2.one, Vector2.one);
+            var inventoryButton = Button("Inventory", safeArea, "ui.bag", new Vector2(-170, -390), new Vector2(140, 62), ToggleInventory); Anchor(inventoryButton.GetComponent<RectTransform>(), Vector2.one, Vector2.one);
             context = Button("Context", safeArea, "ui.interact", new Vector2(-245, 95), new Vector2(220, 105), interactor.TriggerCurrent); Anchor(context.GetComponent<RectTransform>(), new Vector2(1f, 0f), new Vector2(1f, 0f)); localizedLabels.Remove(context.GetComponentInChildren<Text>()); context.gameObject.SetActive(false);
             var sprint = Button("Sprint", safeArea, "ui.run", new Vector2(-300, 225), new Vector2(130, 78), null); Anchor(sprint.GetComponent<RectTransform>(), new Vector2(1f, 0f), new Vector2(1f, 0f)); AddHold(sprint, input.SetSprintButton);
             var jump = Button("Jump", safeArea, "ui.jump", new Vector2(-145, 225), new Vector2(130, 78), input.RequestJump); Anchor(jump.GetComponent<RectTransform>(), new Vector2(1f, 0f), new Vector2(1f, 0f));
@@ -69,6 +69,8 @@ namespace IslandSurvival.UI
             var rotate = Button("Rotate", buildControls.transform, "ui.rotate", new Vector2(-160, 20), new Vector2(145, 68), ServiceRegistry.Building.Rotate); Anchor(rotate.GetComponent<RectTransform>(), new Vector2(1, 0), new Vector2(1, 0));
             var cancel = Button("Cancel", buildControls.transform, "ui.cancel", new Vector2(-5, 20), new Vector2(130, 68), CancelBuild); Anchor(cancel.GetComponent<RectTransform>(), new Vector2(1, 0), new Vector2(1, 0));
             stickBase = Image("JoystickBase", safeArea, new Color(1, 1, 1, 0.16f), new Vector2(150, 150)); stickKnob = Image("JoystickKnob", safeArea, new Color(1, 1, 1, 0.4f), new Vector2(68, 68)); stickBase.gameObject.SetActive(false); stickKnob.gameObject.SetActive(false);
+            var minimapObject = new GameObject("MinimapController", typeof(RectTransform)); minimapObject.transform.SetParent(safeArea, false);
+            var minimap = minimapObject.AddComponent<MinimapController>(); minimap.Initialize(safeArea, ServiceRegistry.Player.transform); ServiceRegistry.MinimapMarkers = minimap.Registry;
         }
         void Update()
         {

@@ -104,5 +104,21 @@ namespace IslandSurvival.Tests
             Assert.GreaterOrEqual(tuning.isometricSize, 10f);
             Assert.Less(Mathf.Abs(StylizedGeometry.ShoreZ(0f)), tuning.isometricSize);
         }
+
+        [Test]
+        public void SpriteWorldSizeCompensatesForScaledFallbackParent()
+        {
+            var parent = new GameObject("Scaled Gameplay Visual"); var child = new GameObject("Sprite Visual");
+            var texture = new Texture2D(100, 100); var sprite = Sprite.Create(texture, new Rect(0f, 0f, 100f, 100f), new Vector2(0.5f, 0f), 100f);
+            try
+            {
+                parent.transform.localScale = new Vector3(0.25f, 2f, 0.5f); child.transform.SetParent(parent.transform, false);
+                child.AddComponent<SpriteWorldVisual>().Initialize(sprite, new Vector2(2f, 3f), SpriteSortCategory.WorldObject, false);
+                var spriteSize = sprite.bounds.size;
+                var worldSize = Vector2.Scale(new Vector2(spriteSize.x, spriteSize.y), new Vector2(child.transform.lossyScale.x, child.transform.lossyScale.y));
+                Assert.AreEqual(2f, worldSize.x, 0.001f); Assert.AreEqual(3f, worldSize.y, 0.001f);
+            }
+            finally { Object.DestroyImmediate(parent); Object.DestroyImmediate(sprite); Object.DestroyImmediate(texture); }
+        }
     }
 }
