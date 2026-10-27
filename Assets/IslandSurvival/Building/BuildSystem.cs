@@ -70,15 +70,18 @@ namespace IslandSurvival.Building
             placedObject.transform.SetPositionAndRotation(ghost.transform.position, ghost.transform.rotation);
             var placed = placedObject.AddComponent<PlacedBuildable>();
             placed.buildableId = active.id; placed.persistentId = Guid.NewGuid().ToString("N"); Placed.Add(placed);
+            if (placed.buildableId == "leaf_bed" && ServiceRegistry.MinimapMarkers != null) ServiceRegistry.MinimapMarkers.RegisterHomeBed(placed.persistentId, placed.transform);
             var placedName = ServiceRegistry.Localization.Get(active.displayNameKey);
             Cancel(); Report(ServiceRegistry.Localization.Format("build.placed", placedName)); ServiceRegistry.Save.SaveNow();
         }
         public PlacedBuildable Restore(string id, string persistentId, Vector3 position, Quaternion rotationValue)
         {
             var obj = WorldFactory.CreateBuildableVisual(id, false); obj.transform.SetPositionAndRotation(position, rotationValue);
-            var placed = obj.AddComponent<PlacedBuildable>(); placed.buildableId = id; placed.persistentId = persistentId; Placed.Add(placed); return placed;
+            var placed = obj.AddComponent<PlacedBuildable>(); placed.buildableId = id; placed.persistentId = persistentId; Placed.Add(placed);
+            if (id == "leaf_bed" && ServiceRegistry.MinimapMarkers != null) ServiceRegistry.MinimapMarkers.RegisterHomeBed(persistentId, placed.transform);
+            return placed;
         }
-        public void ClearPlaced() { foreach (var placed in Placed) if (placed != null) Destroy(placed.gameObject); Placed.Clear(); }
+        public void ClearPlaced() { foreach (var placed in Placed) if (placed != null) { if (placed.buildableId == "leaf_bed" && ServiceRegistry.MinimapMarkers != null) ServiceRegistry.MinimapMarkers.Unregister("home_" + placed.persistentId); Destroy(placed.gameObject); } Placed.Clear(); }
         public void Cancel() { if (ghost != null) Destroy(ghost); ghost = null; active = null; valid = false; }
         void Report(string message) { if (Status != null) Status(message); }
     }

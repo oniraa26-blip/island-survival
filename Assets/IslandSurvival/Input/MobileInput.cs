@@ -17,11 +17,24 @@ namespace IslandSurvival.InputSystem
         Vector3 lastMousePosition;
         bool sprintButtonHeld;
         bool jumpQueued;
+        bool gameplayBlocked;
         const float JoystickRadius = 90f;
+
+        public bool GameplayBlocked { get { return gameplayBlocked; } }
+
+        public void SetGameplayBlocked(bool blocked)
+        {
+            gameplayBlocked = blocked;
+            if (!blocked) return;
+            Move = Vector2.zero; LookDelta = Vector2.zero; SprintHeld = false;
+            InteractPressed = false; sprintButtonHeld = false; jumpQueued = false;
+            moveFinger = -1; lookFinger = -1;
+        }
 
         void Update()
         {
             LookDelta = Vector2.zero;
+            if (gameplayBlocked) { Move = Vector2.zero; SprintHeld = false; return; }
             ReadTouch();
             if (moveFinger < 0) Move = Vector2.zero;
             SprintHeld = sprintButtonHeld;

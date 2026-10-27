@@ -70,7 +70,10 @@ namespace IslandSurvival.UI
             var cancel = Button("Cancel", buildControls.transform, "ui.cancel", new Vector2(-5, 20), new Vector2(130, 68), CancelBuild); Anchor(cancel.GetComponent<RectTransform>(), new Vector2(1, 0), new Vector2(1, 0));
             stickBase = Image("JoystickBase", safeArea, new Color(1, 1, 1, 0.16f), new Vector2(150, 150)); stickKnob = Image("JoystickKnob", safeArea, new Color(1, 1, 1, 0.4f), new Vector2(68, 68)); stickBase.gameObject.SetActive(false); stickKnob.gameObject.SetActive(false);
             var minimapObject = new GameObject("MinimapController", typeof(RectTransform)); minimapObject.transform.SetParent(safeArea, false);
-            var minimap = minimapObject.AddComponent<MinimapController>(); minimap.Initialize(safeArea, ServiceRegistry.Player.transform); ServiceRegistry.MinimapMarkers = minimap.Registry;
+            var worldMapObject = new GameObject("WorldMapController", typeof(RectTransform)); worldMapObject.transform.SetParent(safeArea, false);
+            var worldMap = worldMapObject.AddComponent<WorldMapController>();
+            var minimap = minimapObject.AddComponent<MinimapController>(); minimap.Initialize(safeArea, ServiceRegistry.Player.transform, worldMap.Open); ServiceRegistry.MinimapMarkers = minimap.Registry;
+            worldMap.Initialize(safeArea, input, ServiceRegistry.Player.transform, minimap.Registry);
         }
         void Update()
         {

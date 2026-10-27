@@ -19,13 +19,15 @@ namespace IslandSurvival.UI
         float nextUpdate;
         static Sprite playerArrow;
         static Sprite roundedPanel;
+        System.Action openWorldMap;
 
         public MinimapMarkerRegistry Registry { get { return registry; } }
         public Transform Player { get { return player; } }
+        public bool HasWorldMapCallback { get { return openWorldMap != null; } }
 
-        public void Initialize(RectTransform safeArea, Transform localPlayer)
+        public void Initialize(RectTransform safeArea, Transform localPlayer, System.Action worldMapCallback = null)
         {
-            player = localPlayer; registry = new MinimapMarkerRegistry();
+            player = localPlayer; openWorldMap = worldMapCallback; registry = new MinimapMarkerRegistry();
             Build(safeArea); registry.RegisterLocalPlayer(player); RegisterOriginLandmarks(); SyncViews(); Refresh();
         }
 
@@ -33,6 +35,9 @@ namespace IslandSurvival.UI
         {
             var frame = CreateImage("MinimapFrame", safeArea, new Color(0.02f, 0.12f, 0.14f, 0.88f));
             frame.sprite = GetRoundedPanel();
+            frame.raycastTarget = true;
+            var button = frame.gameObject.AddComponent<Button>(); button.targetGraphic = frame; button.transition = Selectable.Transition.ColorTint; button.onClick.AddListener(RequestWorldMap);
+            var colors = button.colors; colors.highlightedColor = new Color(0.82f, 1f, 0.92f, 1f); colors.pressedColor = new Color(0.65f, 0.9f, 0.78f, 1f); button.colors = colors;
             var frameRect = frame.rectTransform; frameRect.anchorMin = frameRect.anchorMax = new Vector2(1f, 1f);
             frameRect.pivot = new Vector2(1f, 1f); frameRect.anchoredPosition = new Vector2(-22f, -18f); frameRect.sizeDelta = new Vector2(286f, 286f);
             var map = CreateImage("Map", frameRect, new Color(0.12f, 0.42f, 0.34f, 0.92f));
@@ -41,9 +46,11 @@ namespace IslandSurvival.UI
             var north = CreateText("North", frameRect, "N", 20); north.rectTransform.anchorMin = north.rectTransform.anchorMax = new Vector2(0.5f, 1f); north.rectTransform.pivot = new Vector2(0.5f, 1f); north.rectTransform.anchoredPosition = new Vector2(0f, -5f); north.rectTransform.sizeDelta = new Vector2(30f, 28f);
         }
 
+        public void RequestWorldMap() { if (openWorldMap != null) openWorldMap(); }
+
         void RegisterOriginLandmarks()
         {
-            registry.RegisterLandmark(OriginDemoZones.StartingBeach, new Vector3(13f, 0f, 11f));
+            registry.RegisterLandmark("shipwreck", OriginDemoZones.StartingBeach, "map.shipwreck", new Vector3(13f, 0f, 11f));
             registry.RegisterLandmark(OriginDemoZones.FreshwaterStream, new Vector3(0f, 0f, 95f));
             registry.RegisterLandmark(OriginDemoZones.GiantTree, new Vector3(0f, 0f, 155f));
             registry.RegisterLandmark(OriginDemoZones.BlueLagoon, new Vector3(-105f, 0f, 215f));
@@ -80,7 +87,7 @@ namespace IslandSurvival.UI
             {
                 var marker = pair.Key; var view = pair.Value;
                 var discovered = string.IsNullOrEmpty(marker.RequiredDiscoveryId) || ServiceRegistry.Discovery.IsDiscovered(marker.RequiredDiscoveryId);
-                var visible = marker.Active && discovered; view.gameObject.SetActive(visible); if (!visible) continue;
+                var visible = registry.Contains(marker) && marker.Active && discovered; view.gameObject.SetActive(visible); if (!visible) continue;
                 bool outside; var normalized = MinimapProjection.Project(marker.Position, player.position, range, out outside);
                 var magnitude = normalized.magnitude;
                 if (outside)

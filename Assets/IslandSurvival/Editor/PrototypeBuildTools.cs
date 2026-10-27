@@ -32,6 +32,7 @@ namespace IslandSurvival.Editor
             failures += TwoPointFiveDValidator.Validate();
             failures += StartingBeach2DValidator.Validate();
             failures += MinimapValidator.Validate();
+            failures += WorldMapValidator.Validate();
             if (failures > 0) throw new InvalidOperationException("Prototype validation failed with " + failures + " issue(s). See Console.");
             Debug.Log("Prototype 0.1 project validation passed.");
         }
