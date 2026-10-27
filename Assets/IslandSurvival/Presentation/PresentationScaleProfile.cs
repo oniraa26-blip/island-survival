@@ -50,16 +50,16 @@ namespace IslandSurvival.Presentation
             profile.Add(VisualAssetKey.PlayerStarter, 1f, 0.5f, 1f, 1f);
             profile.AddGroup(new[] { VisualAssetKey.GrassCluster, VisualAssetKey.GrassA, VisualAssetKey.ENV_GRASS_A, VisualAssetKey.ENV_GRASS_B, VisualAssetKey.ENV_GRASS_C }, 0.28f, 1.35f, 0.15f, 0.35f);
             profile.AddGroup(new[] { VisualAssetKey.FlowerA, VisualAssetKey.ENV_FLOWER_A, VisualAssetKey.ENV_FLOWER_B }, 0.3f, 1.1f, 0.15f, 0.4f);
-            profile.AddGroup(new[] { VisualAssetKey.Bush, VisualAssetKey.BushA, VisualAssetKey.ENV_BUSH_A, VisualAssetKey.ENV_BUSH_B }, 0.58f, 1.35f, 0.4f, 0.7f);
-            profile.AddGroup(new[] { VisualAssetKey.RockSmall, VisualAssetKey.ENV_ROCK_SMALL_A, VisualAssetKey.ENV_ROCK_SMALL_B }, 0.38f, 1.35f, 0.25f, 0.5f);
-            profile.AddGroup(new[] { VisualAssetKey.Rock, VisualAssetKey.RockMedium, VisualAssetKey.ENV_ROCK_MEDIUM_A }, 0.68f, 1.4f, 0.5f, 0.85f);
+            profile.AddGroup(new[] { VisualAssetKey.Bush, VisualAssetKey.BushA, VisualAssetKey.ENV_BUSH_A, VisualAssetKey.ENV_BUSH_B }, 0.58f, 1.35f, 0.35f, 0.65f);
+            profile.AddGroup(new[] { VisualAssetKey.RockSmall, VisualAssetKey.ENV_ROCK_SMALL_A, VisualAssetKey.ENV_ROCK_SMALL_B }, 0.38f, 1.35f, 0.25f, 0.45f);
+            profile.AddGroup(new[] { VisualAssetKey.Rock, VisualAssetKey.RockMedium, VisualAssetKey.ENV_ROCK_MEDIUM_A }, 0.68f, 1.4f, 0.5f, 0.8f);
             profile.AddGroup(new[] { VisualAssetKey.RockLarge, VisualAssetKey.RockCoastal, VisualAssetKey.ENV_ROCK_LARGE_A }, 1.1f, 1.35f, 0.85f, 1.3f);
-            profile.AddGroup(new[] { VisualAssetKey.PalmTree, VisualAssetKey.PalmA, VisualAssetKey.PalmB, VisualAssetKey.PalmC, VisualAssetKey.ENV_PALM_A, VisualAssetKey.ENV_PALM_B, VisualAssetKey.ENV_PALM_C }, 1.9f, 0.62f, 1.6f, 2.2f);
-            profile.AddGroup(new[] { VisualAssetKey.TropicalTree, VisualAssetKey.TropicalTreeA, VisualAssetKey.ENV_TREE_A, VisualAssetKey.ENV_TREE_B }, 1.75f, 0.78f, 1.5f, 2f);
-            profile.AddGroup(new[] { VisualAssetKey.HouseLevel1Default, VisualAssetKey.HouseLevel1Tropical }, 2.3f, 1.25f, 2f, 2.7f);
-            profile.AddGroup(new[] { VisualAssetKey.Shipwreck, VisualAssetKey.ENV_SHIPWRECK }, 2.15f, 1.6f, 1.5f, 3f);
+            profile.AddGroup(new[] { VisualAssetKey.PalmTree, VisualAssetKey.PalmA, VisualAssetKey.PalmB, VisualAssetKey.PalmC, VisualAssetKey.ENV_PALM_A, VisualAssetKey.ENV_PALM_B, VisualAssetKey.ENV_PALM_C }, 2.15f, 0.62f, 2f, 2.8f);
+            profile.AddGroup(new[] { VisualAssetKey.TropicalTree, VisualAssetKey.TropicalTreeA, VisualAssetKey.ENV_TREE_A, VisualAssetKey.ENV_TREE_B }, 2f, 0.78f, 2f, 3f);
+            profile.AddGroup(new[] { VisualAssetKey.HouseLevel1Default, VisualAssetKey.HouseLevel1Tropical }, 2.4f, 1.25f, 2.2f, 3.2f);
+            profile.AddGroup(new[] { VisualAssetKey.Shipwreck, VisualAssetKey.ENV_SHIPWRECK }, 2.8f, 1.6f, 2.5f, 4f);
             profile.AddGroup(new[] { VisualAssetKey.PropCrate, VisualAssetKey.PROP_CRATE, VisualAssetKey.Barrel, VisualAssetKey.PROP_BARREL }, 0.55f, 1f, 0.4f, 0.75f);
-            profile.AddGroup(new[] { VisualAssetKey.PropDriftwood, VisualAssetKey.PROP_DRIFTWOOD }, 0.4f, 2f, 0.25f, 0.6f);
+            profile.AddGroup(new[] { VisualAssetKey.PropDriftwood, VisualAssetKey.PROP_DRIFTWOOD, VisualAssetKey.PropRope }, 0.4f, 2f, 0.25f, 0.6f);
             return profile;
         }
 

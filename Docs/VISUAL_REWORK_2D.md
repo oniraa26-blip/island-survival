@@ -4,11 +4,13 @@ This pass keeps gameplay roots, colliders, stable IDs, save/discovery state, mov
 
 ## Scale
 
-`PresentationScaleProfile` defines world size relative to a 2.5-unit player height. Ordinary palms are 1.9 player heights and ordinary tropical trees are 1.75. Grass, flowers, bushes, rocks, House L1, props, and the shipwreck use the same centralized lookup. A production ScriptableObject profile can replace the runtime default.
+`PresentationScaleProfile` defines world size relative to a 2.5-unit player height. Ordinary palms are 2.15 player heights, tropical trees are 2.0, House L1 is 2.4, and the hero shipwreck is 2.8. Grass, flowers, bushes, rocks, and props use the same centralized lookup. A production ScriptableObject profile can replace the runtime default.
 
 ## Depth and anchors
 
 All characters and world objects depth-sort in the same band from `SpriteGroundAnchor.WorldPosition`. Player uses feet; palms/trees use trunk base; buildings use foundation; rocks use bottom contact; shipwreck uses its authored ground/water contact. Gameplay colliders remain on their existing roots and do not determine sorting.
+
+`PresentationFootprintPolicy` constrains palm/tree collision to trunks, House L1 to its foundation, and medium/large rocks to a compact base footprint. `StartingBeachComposition` owns deterministic obstacle positions and the protected ten-unit spawn clearing used by the factory and validator.
 
 In Editor or a Development Build, press `F7` in Play Mode to toggle nearby magenta sorting anchors. `F8` remains the player directional debug overlay.
 

@@ -3,6 +3,7 @@ using IslandSurvival.Core;
 using IslandSurvival.Presentation;
 using IslandSurvival.Visual;
 using IslandSurvival.World;
+using IslandSurvival.UI;
 using UnityEditor;
 using UnityEngine;
 
@@ -23,7 +24,7 @@ namespace IslandSurvival.Editor
             VisualAssetKey.ENV_GRASS_A, VisualAssetKey.ENV_GRASS_B, VisualAssetKey.ENV_GRASS_C,
             VisualAssetKey.ENV_FLOWER_A, VisualAssetKey.ENV_FLOWER_B,
             VisualAssetKey.ENV_ROCK_SMALL_A, VisualAssetKey.ENV_ROCK_SMALL_B, VisualAssetKey.ENV_ROCK_MEDIUM_A, VisualAssetKey.ENV_ROCK_LARGE_A,
-            VisualAssetKey.ENV_SHIPWRECK, VisualAssetKey.PROP_CRATE, VisualAssetKey.PROP_BARREL, VisualAssetKey.PROP_DRIFTWOOD
+            VisualAssetKey.ENV_SHIPWRECK, VisualAssetKey.PROP_CRATE, VisualAssetKey.PROP_BARREL, VisualAssetKey.PROP_DRIFTWOOD, VisualAssetKey.PropRope
         };
 
         [MenuItem("Island Survival/Visual/Validate 2.5D Starting Beach")]
@@ -58,13 +59,29 @@ namespace IslandSurvival.Editor
             var scaleProfile = PresentationScaleProfile.CreateDefault();
             var palmRatio = scaleProfile.WorldSize(VisualAssetKey.ENV_PALM_A).y / PresentationScaleProfile.PlayerWorldHeight;
             var treeRatio = scaleProfile.WorldSize(VisualAssetKey.ENV_TREE_A).y / PresentationScaleProfile.PlayerWorldHeight;
-            if (palmRatio < 1.6f || palmRatio > 2.2f) { Debug.LogError("Normal palm presentation scale is outside the locked range."); failures++; }
-            if (treeRatio < 1.5f || treeRatio > 2f) { Debug.LogError("Normal tree presentation scale is outside the locked range."); failures++; }
+            if (palmRatio < 2f || palmRatio > 2.8f) { Debug.LogError("Normal palm presentation scale is outside the locked range."); failures++; }
+            if (treeRatio < 2f || treeRatio > 3f) { Debug.LogError("Normal tree presentation scale is outside the locked range."); failures++; }
+            foreach (var key in new[] { VisualAssetKey.ENV_PALM_A, VisualAssetKey.ENV_TREE_A, VisualAssetKey.HouseLevel1Default, VisualAssetKey.ENV_ROCK_MEDIUM_A, VisualAssetKey.ENV_ROCK_LARGE_A })
+            {
+                var footprint = PresentationFootprintPolicy.For(key);
+                if (!PresentationFootprintPolicy.IsBaseOnly(key, footprint, scaleProfile.WorldSize(key)))
+                { Debug.LogError("Collider footprint is not constrained to the visual base: " + key); failures++; }
+            }
+            for (var i = 0; i < StartingBeachComposition.PalmPositions.Length; i++)
+                if (!StartingBeachComposition.IsSpawnClear(StartingBeachComposition.PalmPositions[i], 0.6f)) { Debug.LogError("Palm overlaps the protected spawn clearing."); failures++; }
+            for (var i = 0; i < StartingBeachComposition.RockClusterCenters.Length; i++)
+                if (!StartingBeachComposition.IsSpawnClear(StartingBeachComposition.RockClusterCenters[i], 1.4f)) { Debug.LogError("Rock overlaps the protected spawn clearing."); failures++; }
+            if (!StartingBeachComposition.IsSpawnClear(StartingBeachComposition.Shipwreck, 3f)) { Debug.LogError("Shipwreck overlaps the protected spawn clearing."); failures++; }
             UnityEngine.Object.DestroyImmediate(scaleProfile);
             if (Resources.Load<Shader>("Visual/Shaders/TropicalWater") == null) { Debug.LogError("TropicalWater shader is missing."); failures++; }
             var foundStartingBeach = false;
             foreach (var id in OriginDemoZones.All) if (id == OriginDemoZones.StartingBeach) foundStartingBeach = true;
             if (!foundStartingBeach || OriginDemoZones.StartingBeach != "starting_beach") { Debug.LogError("Starting Beach stable zone identity changed."); failures++; }
+            if (Application.isPlaying)
+            {
+                var minimap = UnityEngine.Object.FindFirstObjectByType<MinimapController>();
+                if (minimap == null || minimap.Registry == null || minimap.Player == null) { Debug.LogError("Runtime minimap wiring regressed."); failures++; }
+            }
             return failures;
         }
     }

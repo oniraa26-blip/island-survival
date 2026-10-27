@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using IslandSurvival.Core;
+using IslandSurvival.Presentation;
 using IslandSurvival.World;
 using UnityEngine;
 using UnityEngine.UI;
@@ -50,7 +51,7 @@ namespace IslandSurvival.UI
 
         void RegisterOriginLandmarks()
         {
-            registry.RegisterLandmark("shipwreck", OriginDemoZones.StartingBeach, "map.shipwreck", new Vector3(16f, 0f, 4f));
+            registry.RegisterLandmark("shipwreck", OriginDemoZones.StartingBeach, "map.shipwreck", StartingBeachComposition.Shipwreck);
             registry.RegisterLandmark(OriginDemoZones.FreshwaterStream, new Vector3(0f, 0f, 95f));
             registry.RegisterLandmark(OriginDemoZones.GiantTree, new Vector3(0f, 0f, 155f));
             registry.RegisterLandmark(OriginDemoZones.BlueLagoon, new Vector3(-105f, 0f, 215f));

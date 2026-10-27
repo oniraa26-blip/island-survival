@@ -150,11 +150,35 @@ namespace IslandSurvival.Tests
             var profile = PresentationScaleProfile.CreateDefault();
             try
             {
-                AssertScaleWithin(profile, VisualAssetKey.ENV_PALM_A, 1.6f, 2.2f);
-                AssertScaleWithin(profile, VisualAssetKey.ENV_TREE_A, 1.5f, 2f);
-                AssertScaleWithin(profile, VisualAssetKey.ENV_BUSH_A, 0.4f, 0.7f);
+                AssertScaleWithin(profile, VisualAssetKey.ENV_PALM_A, 2f, 2.8f);
+                AssertScaleWithin(profile, VisualAssetKey.ENV_TREE_A, 2f, 3f);
+                AssertScaleWithin(profile, VisualAssetKey.ENV_BUSH_A, 0.35f, 0.65f);
                 AssertScaleWithin(profile, VisualAssetKey.ENV_GRASS_A, 0.15f, 0.35f);
+                AssertScaleWithin(profile, VisualAssetKey.ENV_ROCK_SMALL_A, 0.25f, 0.45f);
+                AssertScaleWithin(profile, VisualAssetKey.ENV_ROCK_MEDIUM_A, 0.5f, 0.8f);
+                AssertScaleWithin(profile, VisualAssetKey.HouseLevel1Default, 2.2f, 3.2f);
+                AssertScaleWithin(profile, VisualAssetKey.ENV_SHIPWRECK, 2.5f, 4f);
             }
+            finally { Object.DestroyImmediate(profile); }
+        }
+
+        [Test]
+        public void StartingBeachObstacleClustersPreserveSpawnClearing()
+        {
+            foreach (var palm in StartingBeachComposition.PalmPositions) Assert.IsTrue(StartingBeachComposition.IsSpawnClear(palm, 0.6f), palm.ToString());
+            foreach (var rock in StartingBeachComposition.RockClusterCenters) Assert.IsTrue(StartingBeachComposition.IsSpawnClear(rock, 1.4f), rock.ToString());
+            Assert.IsTrue(StartingBeachComposition.IsSpawnClear(StartingBeachComposition.Shipwreck, 3f));
+        }
+
+        [TestCase(VisualAssetKey.ENV_PALM_A)]
+        [TestCase(VisualAssetKey.ENV_TREE_A)]
+        [TestCase(VisualAssetKey.HouseLevel1Default)]
+        [TestCase(VisualAssetKey.ENV_ROCK_MEDIUM_A)]
+        [TestCase(VisualAssetKey.ENV_ROCK_LARGE_A)]
+        public void ObstacleColliderIsAValidBaseFootprint(VisualAssetKey key)
+        {
+            var profile = PresentationScaleProfile.CreateDefault();
+            try { Assert.IsTrue(PresentationFootprintPolicy.IsBaseOnly(key, PresentationFootprintPolicy.For(key), profile.WorldSize(key)), key.ToString()); }
             finally { Object.DestroyImmediate(profile); }
         }
 

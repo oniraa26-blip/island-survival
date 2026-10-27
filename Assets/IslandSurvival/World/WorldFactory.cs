@@ -148,7 +148,8 @@ namespace IslandSurvival.World
         static GameObject CreateStartingBeachZone(PlatformProfile profile, Transform parent)
         {
             var root = ZoneRoot("Starting Beach Visuals", parent);
-            CreateWreck(new Vector3(16f, StylizedGeometry.GroundHeight(16f, 4f), 4f), root.transform);
+            var wreck = StartingBeachComposition.Shipwreck;
+            CreateWreck(new Vector3(wreck.x, StylizedGeometry.GroundHeight(wreck.x, wreck.z), wreck.z), root.transform);
             CreateRockComposition(root.transform); CreateVegetation(profile, root.transform);
             StartingBeachVisualSlice.Create(root.transform);
             CreateAudioHook("Ocean Ambience Hook", new Vector3(0f, 0f, -8f), root.transform);
@@ -305,13 +306,14 @@ namespace IslandSurvival.World
 
         static void CreateRockComposition(Transform parent)
         {
-            var positions = new[] { new Vector3(-23f,0f,10f), new Vector3(-20f,0f,14f), new Vector3(24f,0f,9f), new Vector3(28f,0f,15f), new Vector3(-31f,0f,34f), new Vector3(34f,0f,38f), new Vector3(-18f,0f,39f), new Vector3(23f,0f,48f) };
+            var positions = StartingBeachComposition.RockClusterCenters;
             var scales = new[] { new Vector3(4.8f,2.7f,3.5f), new Vector3(2.1f,1.4f,1.8f), new Vector3(5.8f,3.8f,4.2f), new Vector3(2.4f,1.5f,2.1f), new Vector3(6.8f,4.8f,4.5f), new Vector3(3.4f,2.1f,2.8f), new Vector3(1.6f,1f,1.3f), new Vector3(4.5f,3f,3.6f) };
             for (var i = 0; i < positions.Length; i++)
             {
                 var p = positions[i]; p.y = StylizedGeometry.GroundHeight(p.x, p.z) + scales[i].y * 0.38f;
                 var rock = RockVisual("Rounded Rock Formation", StylizedGeometry.Rock(i % 4), Material(i % 3 == 0 ? new Color(0.43f, 0.45f, 0.4f) : RockWarm), parent, i < 6, true, "starting_rock_" + i);
                 rock.transform.localPosition = p; rock.transform.localScale = scales[i]; rock.transform.localRotation = Quaternion.Euler(0f, i * 37f, i % 2 == 0 ? -5f : 4f);
+                ConfigureRockFootprintAndAnchor(rock, StartingRockKey("starting_rock_" + i), StylizedGeometry.GroundHeight(p.x, p.z));
             }
             for (var i = 0; i < 12; i++)
             {
@@ -324,7 +326,7 @@ namespace IslandSurvival.World
 
         static void CreateVegetation(PlatformProfile profile, Transform parent)
         {
-            var palmPositions = new[] { new Vector3(-20f,0f,22f), new Vector3(-27f,0f,27f), new Vector3(22f,0f,25f), new Vector3(30f,0f,31f), new Vector3(-35f,0f,47f), new Vector3(-24f,0f,52f), new Vector3(29f,0f,51f), new Vector3(39f,0f,58f), new Vector3(-31f,0f,73f), new Vector3(27f,0f,78f), new Vector3(41f,0f,88f), new Vector3(-44f,0f,91f) };
+            var palmPositions = StartingBeachComposition.PalmPositions;
             var palmCount = Mathf.Clamp(Mathf.RoundToInt(palmPositions.Length * profile.vegetationDensity), 6, palmPositions.Length);
             for (var i = 0; i < palmCount; i++) CreatePalm(palmPositions[i], "tree_" + i, parent, i);
             var broadleafCount = Mathf.Clamp(Mathf.RoundToInt(7 * profile.vegetationDensity), 3, 7);
@@ -403,9 +405,10 @@ namespace IslandSurvival.World
         static void CreatePalm(Vector3 position, string id, Transform parent, int variant)
         {
             position.y = StylizedGeometry.GroundHeight(position.x, position.z); var root = Child("Stylized Palm " + id, parent); root.localPosition = position; root.localRotation = Quaternion.Euler(0f, variant * 31f, 0f);
-            var collider = root.gameObject.AddComponent<CapsuleCollider>(); collider.center = new Vector3(0.15f, 3.6f, 0f); collider.height = 7.2f; collider.radius = 0.48f;
-            var tree = root.gameObject.AddComponent<TreeGatherable>(); tree.persistentId = id;
             var key = variant % 3 == 0 ? VisualAssetKey.ENV_PALM_A : variant % 3 == 1 ? VisualAssetKey.ENV_PALM_B : VisualAssetKey.ENV_PALM_C;
+            var footprint = PresentationFootprintPolicy.For(key);
+            var collider = root.gameObject.AddComponent<CapsuleCollider>(); collider.center = footprint.center; collider.height = footprint.size.y; collider.radius = footprint.size.x * 0.5f;
+            var tree = root.gameObject.AddComponent<TreeGatherable>(); tree.persistentId = id;
             if (ServiceRegistry.Visuals != null) ServiceRegistry.Visuals.CreatePresentation(key, root, id, visualParent => CreateFallbackPalm(visualParent, variant));
             else CreateFallbackPalm(root, variant);
         }
@@ -424,8 +427,9 @@ namespace IslandSurvival.World
         static void CreateBroadleafTree(Vector3 position, Transform parent, int variant)
         {
             var root = Child("Tropical Broadleaf Tree", parent); root.localPosition = position; root.localRotation = Quaternion.Euler(0f, variant * 47f, 0f);
-            var collider = root.gameObject.AddComponent<CapsuleCollider>(); collider.center = new Vector3(0f, 2.2f, 0f); collider.height = 4.4f; collider.radius = 0.42f;
-            if (ServiceRegistry.Visuals != null) ServiceRegistry.Visuals.CreatePresentation(variant % 2 == 0 ? VisualAssetKey.ENV_TREE_A : VisualAssetKey.ENV_TREE_B, root, "broadleaf_" + variant, visualParent => CreateFallbackBroadleaf(visualParent, variant));
+            var key = variant % 2 == 0 ? VisualAssetKey.ENV_TREE_A : VisualAssetKey.ENV_TREE_B; var footprint = PresentationFootprintPolicy.For(key);
+            var collider = root.gameObject.AddComponent<CapsuleCollider>(); collider.center = footprint.center; collider.height = footprint.size.y; collider.radius = footprint.size.x * 0.5f;
+            if (ServiceRegistry.Visuals != null) ServiceRegistry.Visuals.CreatePresentation(key, root, "broadleaf_" + variant, visualParent => CreateFallbackBroadleaf(visualParent, variant));
             else CreateFallbackBroadleaf(root, variant);
         }
 
@@ -550,7 +554,7 @@ namespace IslandSurvival.World
         static GameObject RockVisual(string name, Mesh collisionMesh, Material fallbackMaterial, Transform parent, bool addCollider, bool castShadows, string identity)
         {
             var root = new GameObject(name); root.transform.SetParent(parent, false);
-            if (addCollider) { var collider = root.AddComponent<MeshCollider>(); collider.sharedMesh = collisionMesh; }
+            if (addCollider) root.AddComponent<BoxCollider>();
             if (ServiceRegistry.Visuals != null)
                 ServiceRegistry.Visuals.CreatePresentation(StartingRockKey(identity), root.transform, identity,
                     visualParent => MeshObject("Procedural Rock Fallback", collisionMesh, fallbackMaterial, visualParent, false, castShadows));
@@ -563,6 +567,19 @@ namespace IslandSurvival.World
             if (identity.StartsWith("starting_small")) return identity.EndsWith("0") || identity.EndsWith("2") || identity.EndsWith("4") ? VisualAssetKey.ENV_ROCK_SMALL_A : VisualAssetKey.ENV_ROCK_SMALL_B;
             if (identity == "starting_rock_1" || identity == "starting_rock_3" || identity == "starting_rock_6") return VisualAssetKey.ENV_ROCK_MEDIUM_A;
             return identity.StartsWith("starting_rock") ? VisualAssetKey.ENV_ROCK_LARGE_A : VisualAssetKey.Rock;
+        }
+
+        static void ConfigureRockFootprintAndAnchor(GameObject rock, VisualAssetKey key, float groundY)
+        {
+            var footprint = PresentationFootprintPolicy.For(key); var collider = rock.GetComponent<BoxCollider>();
+            if (collider != null)
+            {
+                var scale = rock.transform.lossyScale;
+                collider.size = new Vector3(footprint.size.x / Mathf.Max(0.01f, Mathf.Abs(scale.x)), footprint.size.y / Mathf.Max(0.01f, Mathf.Abs(scale.y)), footprint.size.z / Mathf.Max(0.01f, Mathf.Abs(scale.z)));
+                collider.center = rock.transform.InverseTransformPoint(new Vector3(rock.transform.position.x, groundY + footprint.center.y, rock.transform.position.z));
+            }
+            var anchor = rock.GetComponentInChildren<SpriteGroundAnchor>(true);
+            if (anchor != null) anchor.transform.position = new Vector3(anchor.transform.position.x, groundY, anchor.transform.position.z);
         }
 
         static void RegisterLayerSlots(Transform parent, Renderer renderer, params PresentationLayerKey[] keys)
