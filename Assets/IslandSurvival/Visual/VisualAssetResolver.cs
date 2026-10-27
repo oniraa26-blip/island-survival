@@ -110,15 +110,15 @@ namespace IslandSurvival.Visual
             if (material.HasProperty("_Smoothness")) material.SetFloat("_Smoothness", 0.08f);
             if (key == VisualMaterialKey.TerrainBlend)
             {
-                material.SetColor("_DrySandColor", new Color(0.93f, 0.76f, 0.48f));
-                material.SetColor("_WetSandColor", new Color(0.62f, 0.46f, 0.29f));
-                material.SetColor("_GrassColor", new Color(0.24f, 0.57f, 0.25f));
-                material.SetColor("_DirtColor", new Color(0.43f, 0.28f, 0.13f));
+                material.SetColor("_DrySandColor", new Color(0.96f, 0.76f, 0.43f));
+                material.SetColor("_WetSandColor", new Color(0.76f, 0.56f, 0.32f));
+                material.SetColor("_GrassColor", new Color(0.2f, 0.62f, 0.25f));
+                material.SetColor("_DirtColor", new Color(0.52f, 0.34f, 0.16f));
             }
             if (key == VisualMaterialKey.Ocean || key == VisualMaterialKey.Lagoon || key == VisualMaterialKey.ShoreFoam)
             {
                 material.SetColor("_DeepColor", key == VisualMaterialKey.Lagoon ? new Color(0.025f, 0.45f, 0.55f, 0.86f) : new Color(0.015f, 0.31f, 0.48f, 0.88f));
-                material.SetColor("_ShallowColor", key == VisualMaterialKey.ShoreFoam ? new Color(0.8f, 0.96f, 0.9f, 0.72f) : new Color(0.08f, 0.75f, 0.72f, 0.78f));
+                material.SetColor("_ShallowColor", key == VisualMaterialKey.ShoreFoam ? new Color(0.94f, 1f, 0.97f, 0.9f) : new Color(0.06f, 0.8f, 0.74f, 0.82f));
                 material.SetFloat("_Lagoon", key == VisualMaterialKey.Lagoon ? 1f : 0f);
                 material.SetFloat("_FoamOnly", key == VisualMaterialKey.ShoreFoam ? 1f : 0f);
             }

@@ -2,10 +2,10 @@ Shader "IslandSurvival/Stylized Terrain Blend"
 {
     Properties
     {
-        _DrySandColor ("Dry Sand", Color) = (0.93,0.76,0.48,1)
-        _WetSandColor ("Wet Sand", Color) = (0.62,0.46,0.29,1)
-        _GrassColor ("Grass", Color) = (0.24,0.57,0.25,1)
-        _DirtColor ("Dirt", Color) = (0.43,0.28,0.13,1)
+        _DrySandColor ("Dry Sand", Color) = (0.96,0.76,0.43,1)
+        _WetSandColor ("Wet Sand", Color) = (0.76,0.56,0.32,1)
+        _GrassColor ("Grass", Color) = (0.20,0.62,0.25,1)
+        _DirtColor ("Dirt", Color) = (0.52,0.34,0.16,1)
     }
     SubShader
     {
@@ -41,6 +41,9 @@ Shader "IslandSurvival/Stylized Terrain Blend"
                 UNITY_SETUP_INSTANCE_ID(input);
                 half4 weights = max(input.weights, 0.0001h); weights /= weights.r + weights.g + weights.b + weights.a;
                 half3 albedo = _DrySandColor.rgb * weights.r + _WetSandColor.rgb * weights.g + _GrassColor.rgb * weights.b + _DirtColor.rgb * weights.a;
+                half broadVariation = sin(input.positionWS.x * 0.11h + input.positionWS.z * 0.047h) * sin(input.positionWS.z * 0.13h - input.positionWS.x * 0.031h);
+                half fineVariation = sin(input.positionWS.x * 0.43h + input.positionWS.z * 0.37h);
+                albedo *= 1.0h + broadVariation * 0.045h + fineVariation * 0.012h;
                 half3 normal = normalize(input.normalWS); Light mainLight = GetMainLight(TransformWorldToShadowCoord(input.positionWS));
                 half diffuse = saturate(dot(normal, mainLight.direction));
                 half3 light = SampleSH(normal) + mainLight.color * (0.28h + diffuse * 0.72h) * mainLight.shadowAttenuation;

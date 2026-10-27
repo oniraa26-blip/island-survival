@@ -71,7 +71,25 @@ namespace IslandSurvival.Editor
                 if (!StartingBeachComposition.IsSpawnClear(StartingBeachComposition.PalmPositions[i], 0.6f)) { Debug.LogError("Palm overlaps the protected spawn clearing."); failures++; }
             for (var i = 0; i < StartingBeachComposition.RockClusterCenters.Length; i++)
                 if (!StartingBeachComposition.IsSpawnClear(StartingBeachComposition.RockClusterCenters[i], 1.4f)) { Debug.LogError("Rock overlaps the protected spawn clearing."); failures++; }
+            for (var i = 0; i < StartingBeachComposition.TropicalTreePositions.Length; i++)
+                if (!StartingBeachComposition.IsSpawnClear(StartingBeachComposition.TropicalTreePositions[i], 0.75f)) { Debug.LogError("Tropical tree overlaps the protected spawn clearing."); failures++; }
+            for (var i = 0; i < StartingBeachComposition.BushPositions.Length; i++)
+                if (!StartingBeachComposition.IsSpawnClear(StartingBeachComposition.BushPositions[i], 0.5f)) { Debug.LogError("Bush cluster overlaps the protected spawn clearing."); failures++; }
             if (!StartingBeachComposition.IsSpawnClear(StartingBeachComposition.Shipwreck, 3f)) { Debug.LogError("Shipwreck overlaps the protected spawn clearing."); failures++; }
+            if (!StartingBeachComposition.IsSpawnClear(StartingBeachComposition.House, 3f)) { Debug.LogError("House overlaps the protected spawn clearing."); failures++; }
+            var shore = StylizedGeometry.ShoreZ(0f);
+            var wetBand = StylizedGeometry.TerrainBlendWeights(0f, shore + 2f);
+            var dryBand = StylizedGeometry.TerrainBlendWeights(-10f, 10f);
+            var grassBand = StylizedGeometry.TerrainBlendWeights(18f, 45f);
+            const float pathZ = 35f;
+            var dirtBand = StylizedGeometry.TerrainBlendWeights(StylizedGeometry.DirtPathCenterX(pathZ), pathZ);
+            if (wetBand.g <= wetBand.r || dryBand.r <= dryBand.g || grassBand.b <= grassBand.r || dirtBand.a <= dirtBand.b)
+            { Debug.LogError("Ground masks do not resolve into distinct shoreline, sand, grass and dirt-path bands."); failures++; }
+            if (Mathf.Abs(StartingBeachComposition.House.x - StylizedGeometry.DirtPathCenterX(StartingBeachComposition.House.z)) >= 12f)
+            { Debug.LogError("House L1 is no longer composed beside the curved inland path."); failures++; }
+            var playerSize = PresentationScaleProfile.ApplyReadabilityScale(VisualAssetKey.PlayerCharacter, scaleProfile.WorldSize(VisualAssetKey.PlayerCharacter));
+            if (playerSize.y < PresentationScaleProfile.PlayerWorldHeight * 1.15f || playerSize.y > PresentationScaleProfile.PlayerWorldHeight * 1.25f)
+            { Debug.LogError("Player presentation readability scale must remain between 115% and 125%."); failures++; }
             UnityEngine.Object.DestroyImmediate(scaleProfile);
             if (Resources.Load<Shader>("Visual/Shaders/TropicalWater") == null) { Debug.LogError("TropicalWater shader is missing."); failures++; }
             var foundStartingBeach = false;

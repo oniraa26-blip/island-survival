@@ -27,6 +27,35 @@ namespace IslandSurvival.World
             return -6f + Mathf.Sin(x * 0.09f) * 2.3f + Mathf.Sin(x * 0.035f + 1.2f) * 1.4f;
         }
 
+        public static Color TerrainBlendWeights(float x, float z)
+        {
+            var distanceFromShore = z - ShoreZ(x);
+            var organicEdge = Mathf.Sin(x * 0.13f + z * 0.045f) * 1.15f
+                + (Mathf.PerlinNoise(x * 0.038f + 8f, z * 0.034f + 13f) - 0.5f) * 3.2f;
+            var organicDistance = distanceFromShore + organicEdge;
+            var wet = 1f - Mathf.SmoothStep(1.2f, 8.5f, organicDistance);
+            var inland = Mathf.SmoothStep(19f, 39f, organicDistance);
+            var patch = Mathf.PerlinNoise(x * 0.027f + 10f, z * 0.024f + 20f);
+            var pathCenter = DirtPathCenterX(z);
+            var pathWidth = 4.1f + Mathf.Sin(z * 0.09f) * 0.8f;
+            var pathDistance = Mathf.Abs(x - pathCenter + Mathf.Sin(x * 0.18f + z * 0.04f) * 0.65f);
+            var pathApproach = Mathf.SmoothStep(10f, 23f, organicDistance);
+            var inlandPath = pathApproach * (1f - Mathf.SmoothStep(pathWidth, pathWidth + 4.6f, pathDistance)) * 0.9f;
+            var dirtPatch = inland * Mathf.SmoothStep(0.62f, 0.82f, patch) * 0.38f;
+            var dirt = Mathf.Max(inlandPath, dirtPatch);
+            var grassWeight = inland * (1f - dirt);
+            var dry = Mathf.Max(0f, (1f - wet) * (1f - inland) * (1f - dirt));
+            var total = Mathf.Max(0.0001f, dry + wet + grassWeight + dirt);
+            return new Color(dry / total, wet / total, grassWeight / total, dirt / total);
+        }
+
+        public static float DirtPathCenterX(float z)
+        {
+            var beachCurve = Mathf.Sin(z * 0.026f) * 7f + Mathf.Sin(z * 0.071f + 0.8f) * 1.5f;
+            var houseApproach = -20f * Mathf.Exp(-Mathf.Pow((z - 40f) / 17f, 2f));
+            return beachCurve + houseApproach;
+        }
+
         public static Mesh Terrain()
         {
             if (terrain == null) terrain = CreateGround(false);
@@ -190,18 +219,7 @@ namespace IslandSurvival.World
                 var start = grassOnly ? 25f + Mathf.Sin(px * 0.11f) * 3.5f : ShoreZ(px);
                 var pz = Mathf.Lerp(start, grassOnly ? 330f : 334f, t);
                 vertices.Add(new Vector3(px, GroundHeight(px, pz) + (grassOnly ? 0.045f : 0f), pz));
-                var distanceFromShore = pz - ShoreZ(px);
-                var wet = 1f - Mathf.SmoothStep(0f, 9f, distanceFromShore);
-                var inland = Mathf.SmoothStep(18f, 48f, distanceFromShore);
-                var patch = Mathf.PerlinNoise(px * 0.025f + 10f, pz * 0.022f + 20f);
-                var pathCenter = Mathf.Sin(pz * 0.026f) * 7f;
-                var pathApproach = Mathf.SmoothStep(8f, 25f, distanceFromShore);
-                var inlandPath = pathApproach * (1f - Mathf.SmoothStep(3.2f, 9.5f, Mathf.Abs(px - pathCenter))) * 0.82f;
-                var dirt = Mathf.Max(inlandPath, inland * Mathf.SmoothStep(0.56f, 0.78f, patch) * 0.58f);
-                var grassWeight = inland * (1f - dirt);
-                var dry = Mathf.Max(0f, 1f - wet - grassWeight - dirt);
-                var total = Mathf.Max(0.0001f, dry + wet + grassWeight + dirt);
-                colors.Add(new Color(dry / total, wet / total, grassWeight / total, dirt / total));
+                colors.Add(TerrainBlendWeights(px, pz));
             }
             AddGridTriangles(triangles, xSegments, zSegments);
             return Build(grassOnly ? "Organic Grass Transition" : "Organic Starting Beach", vertices, triangles, colors);

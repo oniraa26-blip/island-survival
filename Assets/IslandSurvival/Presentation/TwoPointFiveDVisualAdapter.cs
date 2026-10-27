@@ -87,7 +87,7 @@ namespace IslandSurvival.Presentation
 
         static VisualSpec GetSpec(VisualAssetKey key)
         {
-            var size = PresentationScaleProfile.RuntimeDefault.WorldSize(key);
+            var size = PresentationScaleProfile.ApplyReadabilityScale(key, PresentationScaleProfile.RuntimeDefault.WorldSize(key));
             switch (key)
             {
                 case VisualAssetKey.PlayerCharacter: return new VisualSpec(size, new Color(0.96f, 0.43f, 0.13f), true);

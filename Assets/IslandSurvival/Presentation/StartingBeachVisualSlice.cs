@@ -19,13 +19,14 @@ namespace IslandSurvival.Presentation
             created += CreateVisual(root, "Wreck Barrel", VisualAssetKey.PROP_BARREL, Grounded(19f, 8f)) != null ? 1 : 0;
             created += CreateVisual(root, "Wreck Driftwood", VisualAssetKey.PROP_DRIFTWOOD, Grounded(8f, 3f)) != null ? 1 : 0;
             created += CreateVisual(root, "Wreck Rope", VisualAssetKey.PropRope, Grounded(13f, 8f)) != null ? 1 : 0;
-            created += CreateVisual(root, "West Flower Cluster", VisualAssetKey.ENV_FLOWER_A, Grounded(-18f, 22f)) != null ? 1 : 0;
-            created += CreateVisual(root, "East Flower Cluster", VisualAssetKey.ENV_FLOWER_B, Grounded(18f, 25f)) != null ? 1 : 0;
-            created += CreateVisual(root, "West Grass Accent", VisualAssetKey.ENV_GRASS_B, Grounded(-15f, 25f)) != null ? 1 : 0;
-            created += CreateVisual(root, "East Grass Accent", VisualAssetKey.ENV_GRASS_C, Grounded(15f, 29f)) != null ? 1 : 0;
+            for (var i = 0; i < StartingBeachComposition.FlowerPositions.Length; i++)
+            {
+                var flower = StartingBeachComposition.FlowerPositions[i];
+                created += CreateVisual(root, "Flower Cluster " + i, i % 2 == 0 ? VisualAssetKey.ENV_FLOWER_A : VisualAssetKey.ENV_FLOWER_B, Grounded(flower.x, flower.z)) != null ? 1 : 0;
+            }
 
             var house = new GameObject("House L1 Skin Preview"); house.transform.SetParent(root, false);
-            house.transform.localPosition = Grounded(-23f, 38f);
+            house.transform.localPosition = Grounded(StartingBeachComposition.House.x, StartingBeachComposition.House.z);
             var houseFootprint = PresentationFootprintPolicy.For(VisualAssetKey.HouseLevel1Default);
             var houseCollider = house.AddComponent<BoxCollider>(); houseCollider.size = houseFootprint.size; houseCollider.center = houseFootprint.center;
             var preview = house.AddComponent<BuildingSkinPreview>();

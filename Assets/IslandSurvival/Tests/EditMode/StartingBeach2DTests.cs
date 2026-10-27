@@ -167,7 +167,62 @@ namespace IslandSurvival.Tests
         {
             foreach (var palm in StartingBeachComposition.PalmPositions) Assert.IsTrue(StartingBeachComposition.IsSpawnClear(palm, 0.6f), palm.ToString());
             foreach (var rock in StartingBeachComposition.RockClusterCenters) Assert.IsTrue(StartingBeachComposition.IsSpawnClear(rock, 1.4f), rock.ToString());
+            foreach (var tree in StartingBeachComposition.TropicalTreePositions) Assert.IsTrue(StartingBeachComposition.IsSpawnClear(tree, 0.75f), tree.ToString());
+            foreach (var bush in StartingBeachComposition.BushPositions) Assert.IsTrue(StartingBeachComposition.IsSpawnClear(bush, 0.5f), bush.ToString());
             Assert.IsTrue(StartingBeachComposition.IsSpawnClear(StartingBeachComposition.Shipwreck, 3f));
+            Assert.IsTrue(StartingBeachComposition.IsSpawnClear(StartingBeachComposition.House, 3f));
+        }
+
+        [Test]
+        public void TropicalGroundBandsHaveDistinctDominantPresentationLayers()
+        {
+            var shore = StylizedGeometry.ShoreZ(0f);
+            var wet = StylizedGeometry.TerrainBlendWeights(0f, shore + 2f);
+            var dry = StylizedGeometry.TerrainBlendWeights(-10f, 10f);
+            var grass = StylizedGeometry.TerrainBlendWeights(18f, 45f);
+            const float pathZ = 35f;
+            var dirt = StylizedGeometry.TerrainBlendWeights(StylizedGeometry.DirtPathCenterX(pathZ), pathZ);
+            Assert.Greater(wet.g, wet.r, "Wet sand must read at the water edge.");
+            Assert.Greater(dry.r, dry.g, "Warm dry sand must separate from wet sand.");
+            Assert.Greater(grass.b, grass.r, "Inland ground must read as tropical grass.");
+            Assert.Greater(dirt.a, dirt.b, "The curved inland route must read as dirt over grass.");
+        }
+
+        [Test]
+        public void PlayerReadabilityScaleChangesPresentationOnly()
+        {
+            var source = new Vector2(1.25f, PresentationScaleProfile.PlayerWorldHeight);
+            Assert.AreEqual(source * 1.2f, PresentationScaleProfile.ApplyReadabilityScale(VisualAssetKey.PlayerCharacter, source));
+            Assert.AreEqual(source, PresentationScaleProfile.ApplyReadabilityScale(VisualAssetKey.ENV_PALM_A, source));
+        }
+
+        [Test]
+        public void HouseRemainsBesideTheCurvedDirtPath()
+        {
+            Assert.Less(Mathf.Abs(StartingBeachComposition.House.x - StylizedGeometry.DirtPathCenterX(StartingBeachComposition.House.z)), 12f);
+        }
+
+        [Test]
+        public void EnvironmentSpriteBillboardsUprightToIsometricCamera()
+        {
+            var cameraObject = new GameObject("Billboard Test Camera");
+            var parent = new GameObject("Rotated Environment Root");
+            var visualObject = new GameObject("Palm Sprite");
+            var texture = new Texture2D(8, 16); var sprite = Sprite.Create(texture, new Rect(0f, 0f, 8f, 16f), new Vector2(0.5f, 0f), 8f);
+            try
+            {
+                cameraObject.tag = "MainCamera"; cameraObject.AddComponent<UnityEngine.Camera>();
+                cameraObject.transform.rotation = Quaternion.Euler(40f, 45f, 0f);
+                parent.transform.rotation = Quaternion.Euler(82f, 31f, 14f);
+                visualObject.transform.SetParent(parent.transform, false);
+                visualObject.AddComponent<SpriteWorldVisual>().Initialize(sprite, new Vector2(2f, 5f), SpriteSortCategory.WorldObject, false, VisualAssetKey.ENV_PALM_A);
+                Assert.Less(Quaternion.Angle(cameraObject.transform.rotation, visualObject.transform.rotation), 0.01f);
+            }
+            finally
+            {
+                Object.DestroyImmediate(parent); Object.DestroyImmediate(cameraObject);
+                Object.DestroyImmediate(sprite); Object.DestroyImmediate(texture);
+            }
         }
 
         [TestCase(VisualAssetKey.ENV_PALM_A)]

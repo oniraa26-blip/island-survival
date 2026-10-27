@@ -12,6 +12,8 @@ All characters and world objects depth-sort in the same band from `SpriteGroundA
 
 `PresentationFootprintPolicy` constrains palm/tree collision to trunks, House L1 to its foundation, and medium/large rocks to a compact base footprint. `StartingBeachComposition` owns deterministic obstacle positions and the protected ten-unit spawn clearing used by the factory and validator.
 
+The Starting Beach ground uses normalized vertex masks for wet sand, warm dry sand, tropical grass and a curved dirt path. The ocean/shore mesh provides turquoise deep-to-shallow water and a raised organic foam ribbon. Vegetation positions are authored as palm, tropical-tree, bush/flower and rock clusters with a protected movement corridor instead of uniform scatter. House L1 sits beside the inland path. Player sprite presentation receives a visual-only 1.2x readability scale; its gameplay `CharacterController` is unchanged.
+
 In Editor or a Development Build, press `F7` in Play Mode to toggle nearby magenta sorting anchors. `F8` remains the player directional debug overlay.
 
 ## Starting Beach

@@ -19,6 +19,7 @@ namespace IslandSurvival.Presentation
     public sealed class PresentationScaleProfile : ScriptableObject
     {
         public const float PlayerWorldHeight = 2.5f;
+        public const float PlayerReadabilityScale = 1.2f;
         [SerializeField] List<PresentationScaleEntry> entries = new List<PresentationScaleEntry>();
         static PresentationScaleProfile runtimeDefault;
 
@@ -38,6 +39,13 @@ namespace IslandSurvival.Presentation
             var entry = Find(key);
             var height = (entry != null ? entry.heightInPlayerHeights : 0.5f) * PlayerWorldHeight;
             return new Vector2(height * (entry != null ? entry.widthToHeight : 1f), height);
+        }
+
+        public static Vector2 ApplyReadabilityScale(VisualAssetKey key, Vector2 size)
+        {
+            return key == VisualAssetKey.PlayerCharacter || key == VisualAssetKey.PlayerStarter
+                ? size * PlayerReadabilityScale
+                : size;
         }
 
         public PresentationScaleEntry Find(VisualAssetKey key)

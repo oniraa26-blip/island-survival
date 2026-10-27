@@ -329,12 +329,15 @@ namespace IslandSurvival.World
             var palmPositions = StartingBeachComposition.PalmPositions;
             var palmCount = Mathf.Clamp(Mathf.RoundToInt(palmPositions.Length * profile.vegetationDensity), 6, palmPositions.Length);
             for (var i = 0; i < palmCount; i++) CreatePalm(palmPositions[i], "tree_" + i, parent, i);
-            var broadleafCount = Mathf.Clamp(Mathf.RoundToInt(7 * profile.vegetationDensity), 3, 7);
-            for (var i = 0; i < broadleafCount; i++) { var side = i % 2 == 0 ? -1f : 1f; var x = side * (24f + (i / 2) * 7f); var z = 45f + (i % 3) * 13f; CreateBroadleafTree(new Vector3(x, StylizedGeometry.GroundHeight(x, z), z), parent, i); }
-            var bushCount = Mathf.Clamp(Mathf.RoundToInt(18 * profile.vegetationDensity), 8, 18);
-            for (var i = 0; i < bushCount; i++) { var side = i % 2 == 0 ? -1f : 1f; var x = side * (17f + (i % 5) * 4f); var z = 24f + (i / 5) * 14f + (i % 3) * 2f; CreateBush(new Vector3(x, StylizedGeometry.GroundHeight(x, z), z), parent, i, true); }
-            var grassCount = Mathf.Clamp(Mathf.RoundToInt(28 * profile.vegetationDensity), 12, 28);
-            for (var i = 0; i < grassCount; i++) { var side = i % 2 == 0 ? -1f : 1f; var x = side * (13f + (i % 7) * 4.5f); var z = 28f + (i / 7) * 13f; CreateGrassCluster(new Vector3(x, StylizedGeometry.GroundHeight(x, z), z), parent, i, true); }
+            var treePositions = StartingBeachComposition.TropicalTreePositions;
+            var broadleafCount = Mathf.Clamp(Mathf.RoundToInt(treePositions.Length * profile.vegetationDensity), 3, treePositions.Length);
+            for (var i = 0; i < broadleafCount; i++) { var p = treePositions[i]; CreateBroadleafTree(new Vector3(p.x, StylizedGeometry.GroundHeight(p.x, p.z), p.z), parent, i); }
+            var bushPositions = StartingBeachComposition.BushPositions;
+            var bushCount = Mathf.Clamp(Mathf.RoundToInt(bushPositions.Length * profile.vegetationDensity), 6, bushPositions.Length);
+            for (var i = 0; i < bushCount; i++) { var p = bushPositions[i]; CreateBush(new Vector3(p.x, StylizedGeometry.GroundHeight(p.x, p.z), p.z), parent, i, true); }
+            var grassPositions = StartingBeachComposition.GrassPositions;
+            var grassCount = Mathf.Clamp(Mathf.RoundToInt(grassPositions.Length * profile.vegetationDensity), 8, grassPositions.Length);
+            for (var i = 0; i < grassCount; i++) { var p = grassPositions[i]; CreateGrassCluster(new Vector3(p.x, StylizedGeometry.GroundHeight(p.x, p.z), p.z), parent, i, true); }
             for (var i = 0; i < 7; i++) { var x = -32f + i * 11f; var z = 17f + (i % 2) * 6f; AddBranch(parent, new Vector3(x, StylizedGeometry.GroundHeight(x, z) + 0.08f, z), new Vector3(0.45f, 1.4f, 0.45f), Quaternion.Euler(72f, i * 28f, 10f), "Driftwood"); }
         }
 
@@ -538,7 +541,12 @@ namespace IslandSurvival.World
         static Mesh CreateFoamRibbon()
         {
             const int segments = 32; var vertices = new List<Vector3>((segments + 1) * 2); var triangles = new List<int>(segments * 6);
-            for (var i = 0; i <= segments; i++) { var x = Mathf.Lerp(-52f, 52f, i / (float)segments); var shore = StylizedGeometry.ShoreZ(x); vertices.Add(new Vector3(x, -0.46f, shore - 1.5f)); vertices.Add(new Vector3(x, -0.45f, shore + 0.25f)); }
+            for (var i = 0; i <= segments; i++)
+            {
+                var x = Mathf.Lerp(-52f, 52f, i / (float)segments); var shore = StylizedGeometry.ShoreZ(x);
+                vertices.Add(new Vector3(x, -0.48f, shore - 2.1f));
+                vertices.Add(new Vector3(x, StylizedGeometry.GroundHeight(x, shore) + 0.035f, shore + 0.45f));
+            }
             for (var i = 0; i < segments; i++) { var a = i * 2; var b = a + 1; var c = a + 2; var d = a + 3; triangles.Add(a); triangles.Add(c); triangles.Add(b); triangles.Add(b); triangles.Add(c); triangles.Add(d); }
             var mesh = new Mesh { name = "Curved Shore Foam Ribbon" }; mesh.SetVertices(vertices); mesh.SetTriangles(triangles, 0); mesh.RecalculateNormals(); mesh.RecalculateBounds(); return mesh;
         }

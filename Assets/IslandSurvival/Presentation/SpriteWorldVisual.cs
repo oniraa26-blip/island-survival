@@ -51,7 +51,9 @@ namespace IslandSurvival.Presentation
         public void Initialize(SpriteVisualDefinition definition, Sprite sprite, SpriteSortCategory sortCategory, bool isDynamic)
         {
             directionSet = definition != null ? definition.Idle : null;
-            Initialize(sprite, definition != null ? definition.WorldSize : Vector2.one, sortCategory, isDynamic, definition != null ? definition.AssetKey : VisualAssetKey.None);
+            var key = definition != null ? definition.AssetKey : VisualAssetKey.None;
+            var size = definition != null ? definition.WorldSize : Vector2.one;
+            Initialize(sprite, PresentationScaleProfile.ApplyReadabilityScale(key, size), sortCategory, isDynamic, key);
         }
 
         public void SetDirectionFromWorldMovement(Vector3 movement)
