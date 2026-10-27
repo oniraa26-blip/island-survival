@@ -15,12 +15,16 @@ namespace IslandSurvival.Presentation
         SpriteDirectionSet directionSet;
         VisualAssetKey assetKey;
         Vector2 targetWorldSize;
-        SpriteDirection direction = SpriteDirection.S;
+        SpriteDirection direction = SpriteDirection.N;
+        ScreenFacing facing = ScreenFacing.Front;
+        Vector3 debugWorldMovement;
+        Vector2 debugScreenMovement;
         bool moving;
         bool sprinting;
         int animationFrame = -1;
 
         public SpriteDirection Direction { get { return direction; } }
+        public ScreenFacing Facing { get { return facing; } }
 
         public void Initialize(Sprite sprite, Vector2 worldSize, SpriteSortCategory sortCategory, bool isDynamic, VisualAssetKey key = VisualAssetKey.None)
         {
@@ -49,7 +53,10 @@ namespace IslandSurvival.Presentation
         public void SetDirectionFromWorldMovement(Vector3 movement)
         {
             if (cameraTransform == null && UnityEngine.Camera.main != null) cameraTransform = UnityEngine.Camera.main.transform;
-            var next = SpriteDirectionResolver.FromWorldMovement(movement, cameraTransform);
+            debugWorldMovement = movement;
+            var nextFacing = SpriteDirectionResolver.FromWorldMovement(movement, cameraTransform, facing, out debugScreenMovement);
+            var next = SpriteDirectionResolver.AtlasSlot(nextFacing);
+            facing = nextFacing;
             if (next == direction) return;
             direction = next;
             Sprite sprite;
@@ -106,5 +113,27 @@ namespace IslandSurvival.Presentation
                 targetWorldSize.y / Mathf.Max(0.01f, spriteSize.y * Mathf.Abs(parentScale.y)),
                 1f / Mathf.Max(0.01f, Mathf.Abs(parentScale.z)));
         }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        static bool showDirectionDebug;
+
+        void OnGUI()
+        {
+            if (assetKey != VisualAssetKey.PlayerCharacter) return;
+            if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.F8)
+            {
+                showDirectionDebug = !showDirectionDebug;
+                Event.current.Use();
+            }
+            if (!showDirectionDebug) return;
+            var spriteName = spriteRenderer != null && spriteRenderer.sprite != null ? spriteRenderer.sprite.name : "<none>";
+            GUI.Box(new Rect(12f, 12f, 430f, 92f),
+                "PLAYER DIRECTION (F8)\n" +
+                "MOVE WORLD: " + debugWorldMovement.ToString("F2") +
+                "   MOVE SCREEN: " + debugScreenMovement.ToString("F2") + "\n" +
+                "FACING: " + facing.ToString().ToUpperInvariant() +
+                "   SPRITE SLOT: " + direction + " / " + spriteName);
+        }
+#endif
     }
 }

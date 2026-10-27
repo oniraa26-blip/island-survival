@@ -43,7 +43,10 @@ namespace IslandSurvival.Presentation
         static Sprite GetSprite(VisualAssetKey key, Color color)
         {
             Sprite sprite;
-            if (PresentationRuntime.PlaceholderArtEnabled && TemporaryArtLibrary.TryGet(key, SpriteDirection.S, out sprite)) return sprite;
+            var initialSlot = key == VisualAssetKey.PlayerCharacter || key == VisualAssetKey.PlayerStarter
+                ? SpriteDirectionResolver.AtlasSlot(ScreenFacing.Front)
+                : SpriteDirection.S;
+            if (PresentationRuntime.PlaceholderArtEnabled && TemporaryArtLibrary.TryGet(key, initialSlot, out sprite)) return sprite;
             if (Sprites.TryGetValue(key, out sprite) && sprite != null) return sprite;
             const int width = 32, height = 48;
             var texture = new Texture2D(width, height, TextureFormat.RGBA32, false) { name = "Fallback2D_" + key, filterMode = FilterMode.Bilinear, wrapMode = TextureWrapMode.Clamp };

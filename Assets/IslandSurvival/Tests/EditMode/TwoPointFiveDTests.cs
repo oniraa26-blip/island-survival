@@ -18,15 +18,15 @@ namespace IslandSurvival.Tests
         public void DirectionResolverCoversEightDirections(float x, float y, SpriteDirection expected)
         { Assert.AreEqual(expected, SpriteDirectionResolver.FromMovement(new Vector2(x, y))); }
 
-        [TestCase(0f, 1f, SpriteDirection.N)]
-        [TestCase(0f, -1f, SpriteDirection.S)]
-        [TestCase(-1f, 0f, SpriteDirection.W)]
-        [TestCase(1f, 0f, SpriteDirection.E)]
-        [TestCase(-1f, 1f, SpriteDirection.NW)]
-        [TestCase(1f, 1f, SpriteDirection.NE)]
-        [TestCase(-1f, -1f, SpriteDirection.SW)]
-        [TestCase(1f, -1f, SpriteDirection.SE)]
-        public void CameraRelativeMovementResolvesAllScreenDirections(float screenX, float screenY, SpriteDirection expected)
+        [TestCase(0f, 1f, ScreenFacing.Back)]
+        [TestCase(0f, -1f, ScreenFacing.Front)]
+        [TestCase(-1f, 0f, ScreenFacing.Left)]
+        [TestCase(1f, 0f, ScreenFacing.Right)]
+        [TestCase(-1f, 1f, ScreenFacing.BackLeft)]
+        [TestCase(1f, 1f, ScreenFacing.BackRight)]
+        [TestCase(-1f, -1f, ScreenFacing.FrontLeft)]
+        [TestCase(1f, -1f, ScreenFacing.FrontRight)]
+        public void CameraRelativeMovementResolvesScreenFacingSemantics(float screenX, float screenY, ScreenFacing expected)
         {
             var camera = new GameObject("IsometricCamera");
             try
@@ -35,9 +35,36 @@ namespace IslandSurvival.Tests
                 var right = camera.transform.right; right.y = 0f; right.Normalize();
                 var up = camera.transform.forward; up.y = 0f; up.Normalize();
                 var worldMovement = right * screenX + up * screenY;
-                Assert.AreEqual(expected, SpriteDirectionResolver.FromWorldMovement(worldMovement, camera.transform));
+                Vector2 screenMovement;
+                Assert.AreEqual(expected, SpriteDirectionResolver.FromWorldMovement(worldMovement, camera.transform, ScreenFacing.Front, out screenMovement));
+                Assert.AreEqual(screenX, screenMovement.x, 0.001f, "Horizontal movement must round-trip into screen space.");
+                Assert.AreEqual(screenY, screenMovement.y, 0.001f, "Vertical movement must round-trip into screen space.");
             }
             finally { Object.DestroyImmediate(camera); }
+        }
+
+        [Test]
+        public void ZeroMovementRetainsLastSemanticFacing()
+        {
+            Assert.AreEqual(ScreenFacing.BackLeft,
+                SpriteDirectionResolver.FromScreenMovement(Vector2.zero, ScreenFacing.BackLeft));
+        }
+
+        [Test]
+        public void VerifiedAtlasSlotsDoNotReverseFrontAndBack()
+        {
+            Assert.AreEqual(SpriteDirection.N, SpriteDirectionResolver.AtlasSlot(ScreenFacing.Front), "Atlas slot N visibly contains the front-facing explorer.");
+            Assert.AreEqual(SpriteDirection.S, SpriteDirectionResolver.AtlasSlot(ScreenFacing.Back), "Atlas slot S visibly contains the back-facing explorer.");
+            Assert.AreEqual(SpriteDirection.NW, SpriteDirectionResolver.AtlasSlot(ScreenFacing.FrontLeft));
+            Assert.AreEqual(SpriteDirection.SW, SpriteDirectionResolver.AtlasSlot(ScreenFacing.BackLeft));
+
+            Sprite frontFrame;
+            Sprite backFrame;
+            Assert.IsTrue(TemporaryArtLibrary.TryGetWalk(SpriteDirectionResolver.AtlasSlot(ScreenFacing.Front), 0, out frontFrame));
+            Assert.IsTrue(TemporaryArtLibrary.TryGetWalk(SpriteDirectionResolver.AtlasSlot(ScreenFacing.Back), 0, out backFrame));
+            Assert.AreEqual("TEMP_PlayerWalk_N_0", frontFrame.name);
+            Assert.AreEqual("TEMP_PlayerWalk_S_0", backFrame.name);
+            Assert.AreNotEqual(frontFrame.rect.y, backFrame.rect.y, "Verified front and back frames must come from different atlas rows.");
         }
 
         [Test]

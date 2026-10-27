@@ -27,9 +27,12 @@ namespace IslandSurvival.Visual
             GameObject visual;
             SpriteVisualDefinition spriteDefinition;
             Sprite authoredSprite;
+            var initialSpriteSlot = key == VisualAssetKey.PlayerCharacter || key == VisualAssetKey.PlayerStarter
+                ? SpriteDirectionResolver.AtlasSlot(ScreenFacing.Front)
+                : SpriteDirection.S;
             if (PresentationRuntime.IsTwoPointFiveD && catalog != null
                 && catalog.TryGetSpriteVisual(key, out spriteDefinition)
-                && spriteDefinition.Idle.TryGet(SpriteDirection.S, out authoredSprite))
+                && spriteDefinition.Idle.TryGet(initialSpriteSlot, out authoredSprite))
             {
                 visual = new GameObject("2.5D " + key);
                 visual.transform.SetParent(parent, false);
