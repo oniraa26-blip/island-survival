@@ -11,8 +11,9 @@ namespace IslandSurvival.Presentation
 
         public void Initialize()
         {
-            defaultSkin = StartingBeachVisualSlice.CreateVisual(transform, "House L1 Default", VisualAssetKey.HouseLevel1Default, Vector3.zero, new Vector2(6.4f, 5.1f));
-            tropicalSkin = StartingBeachVisualSlice.CreateVisual(transform, "House L1 Tropical", VisualAssetKey.HouseLevel1Tropical, Vector3.zero, new Vector2(6.4f, 5.1f));
+            var size = PresentationScaleProfile.RuntimeDefault.WorldSize(VisualAssetKey.HouseLevel1Default);
+            defaultSkin = StartingBeachVisualSlice.CreateVisual(transform, "House L1 Default", VisualAssetKey.HouseLevel1Default, Vector3.zero, size);
+            tropicalSkin = StartingBeachVisualSlice.CreateVisual(transform, "House L1 Tropical", VisualAssetKey.HouseLevel1Tropical, Vector3.zero, size);
             if (tropicalSkin != null) tropicalSkin.SetActive(false);
             nextSwitch = Time.unscaledTime + 4f;
         }

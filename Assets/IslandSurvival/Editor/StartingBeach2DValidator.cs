@@ -17,7 +17,13 @@ namespace IslandSurvival.Editor
             VisualAssetKey.RockSmall, VisualAssetKey.RockMedium, VisualAssetKey.RockLarge, VisualAssetKey.RockCoastal,
             VisualAssetKey.Shipwreck, VisualAssetKey.HouseLevel1Default, VisualAssetKey.HouseLevel1Tropical,
             VisualAssetKey.FarmSoilDry, VisualAssetKey.FarmSoilWet,
-            VisualAssetKey.CropTestStage1, VisualAssetKey.CropTestStage2, VisualAssetKey.CropTestStage3
+            VisualAssetKey.CropTestStage1, VisualAssetKey.CropTestStage2, VisualAssetKey.CropTestStage3,
+            VisualAssetKey.ENV_PALM_A, VisualAssetKey.ENV_PALM_B, VisualAssetKey.ENV_PALM_C,
+            VisualAssetKey.ENV_TREE_A, VisualAssetKey.ENV_TREE_B, VisualAssetKey.ENV_BUSH_A, VisualAssetKey.ENV_BUSH_B,
+            VisualAssetKey.ENV_GRASS_A, VisualAssetKey.ENV_GRASS_B, VisualAssetKey.ENV_GRASS_C,
+            VisualAssetKey.ENV_FLOWER_A, VisualAssetKey.ENV_FLOWER_B,
+            VisualAssetKey.ENV_ROCK_SMALL_A, VisualAssetKey.ENV_ROCK_SMALL_B, VisualAssetKey.ENV_ROCK_MEDIUM_A, VisualAssetKey.ENV_ROCK_LARGE_A,
+            VisualAssetKey.ENV_SHIPWRECK, VisualAssetKey.PROP_CRATE, VisualAssetKey.PROP_BARREL, VisualAssetKey.PROP_DRIFTWOOD
         };
 
         [MenuItem("Island Survival/Visual/Validate 2.5D Starting Beach")]
@@ -49,6 +55,12 @@ namespace IslandSurvival.Editor
                 { Debug.LogError("Missing explorer walk frames for direction " + direction + "."); failures++; }
             }
             if (Enum.GetValues(typeof(SpriteSortCategory)).Length < 7) { Debug.LogError("Required 2.5D sorting categories are missing."); failures++; }
+            var scaleProfile = PresentationScaleProfile.CreateDefault();
+            var palmRatio = scaleProfile.WorldSize(VisualAssetKey.ENV_PALM_A).y / PresentationScaleProfile.PlayerWorldHeight;
+            var treeRatio = scaleProfile.WorldSize(VisualAssetKey.ENV_TREE_A).y / PresentationScaleProfile.PlayerWorldHeight;
+            if (palmRatio < 1.6f || palmRatio > 2.2f) { Debug.LogError("Normal palm presentation scale is outside the locked range."); failures++; }
+            if (treeRatio < 1.5f || treeRatio > 2f) { Debug.LogError("Normal tree presentation scale is outside the locked range."); failures++; }
+            UnityEngine.Object.DestroyImmediate(scaleProfile);
             if (Resources.Load<Shader>("Visual/Shaders/TropicalWater") == null) { Debug.LogError("TropicalWater shader is missing."); failures++; }
             var foundStartingBeach = false;
             foreach (var id in OriginDemoZones.All) if (id == OriginDemoZones.StartingBeach) foundStartingBeach = true;

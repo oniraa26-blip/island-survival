@@ -58,25 +58,45 @@ namespace IslandSurvival.Presentation
                     var index = (int)direction;
                     column = index % 4; row = index / 4; return true;
                 case VisualAssetKey.PalmA: column = 0; row = 0; return true;
-                case VisualAssetKey.PalmB: column = 1; row = 0; return true;
-                case VisualAssetKey.PalmC: column = 2; row = 0; return true;
-                case VisualAssetKey.TropicalTreeA: column = 3; row = 0; return true;
+                case VisualAssetKey.ENV_PALM_A: column = 0; row = 0; return true;
+                case VisualAssetKey.PalmB:
+                case VisualAssetKey.ENV_PALM_B: column = 1; row = 0; return true;
+                case VisualAssetKey.PalmC:
+                case VisualAssetKey.ENV_PALM_C: column = 2; row = 0; return true;
+                case VisualAssetKey.TropicalTreeA:
+                case VisualAssetKey.ENV_TREE_A:
+                case VisualAssetKey.ENV_TREE_B: column = 3; row = 0; return true;
                 case VisualAssetKey.BushA:
-                case VisualAssetKey.FlowerA: column = 0; row = 1; return true;
-                case VisualAssetKey.GrassA: column = 1; row = 1; return true;
+                case VisualAssetKey.ENV_BUSH_A:
+                case VisualAssetKey.ENV_BUSH_B:
+                case VisualAssetKey.FlowerA:
+                case VisualAssetKey.ENV_FLOWER_A:
+                case VisualAssetKey.ENV_FLOWER_B: column = 0; row = 1; return true;
+                case VisualAssetKey.GrassA:
+                case VisualAssetKey.ENV_GRASS_A:
+                case VisualAssetKey.ENV_GRASS_B:
+                case VisualAssetKey.ENV_GRASS_C: column = 1; row = 1; return true;
                 case VisualAssetKey.RockSmall:
+                case VisualAssetKey.ENV_ROCK_SMALL_A:
+                case VisualAssetKey.ENV_ROCK_SMALL_B:
                 case VisualAssetKey.ResourceStone: column = 2; row = 1; return true;
-                case VisualAssetKey.RockMedium: column = 3; row = 1; return true;
+                case VisualAssetKey.RockMedium:
+                case VisualAssetKey.ENV_ROCK_MEDIUM_A: column = 3; row = 1; return true;
                 case VisualAssetKey.RockLarge:
-                case VisualAssetKey.RockCoastal: column = 0; row = 2; return true;
+                case VisualAssetKey.RockCoastal:
+                case VisualAssetKey.ENV_ROCK_LARGE_A: column = 0; row = 2; return true;
                 case VisualAssetKey.PropDriftwood:
+                case VisualAssetKey.PROP_DRIFTWOOD:
                 case VisualAssetKey.PropRope:
                 case VisualAssetKey.ResourceWood:
                     column = 1; row = 2; return true;
                 case VisualAssetKey.PropCrate:
+                case VisualAssetKey.PROP_CRATE:
                 case VisualAssetKey.Chest: column = 2; row = 2; return true;
-                case VisualAssetKey.Barrel: column = 3; row = 2; return true;
-                case VisualAssetKey.Shipwreck: column = 1; row = 3; return true;
+                case VisualAssetKey.Barrel:
+                case VisualAssetKey.PROP_BARREL: column = 3; row = 2; return true;
+                case VisualAssetKey.Shipwreck:
+                case VisualAssetKey.ENV_SHIPWRECK: column = 1; row = 3; return true;
                 case VisualAssetKey.HouseLevel1Default: atlas = DirectionalAtlasPath; column = BuildingColumn(direction); row = 2; return true;
                 case VisualAssetKey.HouseLevel1Tropical: atlas = DirectionalAtlasPath; column = BuildingColumn(direction); row = 3; return true;
                 case VisualAssetKey.FarmSoilDry:

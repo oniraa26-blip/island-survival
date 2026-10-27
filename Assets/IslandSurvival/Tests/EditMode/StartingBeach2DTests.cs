@@ -70,7 +70,7 @@ namespace IslandSurvival.Tests
             try
             {
                 var directions = new SpriteDirectionSet();
-                SetField(directions, "sprites", new List<DirectionalSprite> { new DirectionalSprite { direction = SpriteDirection.S, sprite = sprite } });
+                SetField(directions, "sprites", new List<DirectionalSprite> { new DirectionalSprite { direction = SpriteDirection.N, sprite = sprite } });
                 SetField(definition, "assetKey", VisualAssetKey.PlayerCharacter); SetField(definition, "idle", directions); SetField(definition, "worldSize", new Vector2(1f, 2f));
                 SetField(catalog, "spriteVisuals", new List<SpriteVisualDefinition> { definition });
                 var fallbackCalled = false;
@@ -95,6 +95,91 @@ namespace IslandSurvival.Tests
             var position = new Vector3(12.5f, 0f, 31.25f); var forward = new Vector3(1f, -1f, 1f).normalized;
             Assert.AreEqual(SpriteWorldSorting.Calculate(position, forward, SpriteSortCategory.WorldObject),
                 SpriteWorldSorting.Calculate(position, forward, SpriteSortCategory.WorldObject));
+        }
+
+        [Test]
+        public void PlayerAndTreeSortFromGroundContactInFrontAndBehind()
+        {
+            var forward = new Vector3(1f, 0f, 1f).normalized;
+            var tree = new Vector3(5f, 0f, 5f);
+            var playerBehind = new Vector3(9f, 0f, 9f);
+            var playerInFront = Vector3.zero;
+            var treeOrder = SpriteWorldSorting.Calculate(tree, forward, SpriteSortCategory.WorldObject);
+            Assert.Less(SpriteWorldSorting.Calculate(playerBehind, forward, SpriteSortCategory.WorldObject), treeOrder);
+            Assert.Greater(SpriteWorldSorting.Calculate(playerInFront, forward, SpriteSortCategory.WorldObject), treeOrder);
+        }
+
+        [Test]
+        public void BesideTreeSortingHasDeterministicLateralTieBreak()
+        {
+            var forward = new Vector3(1f, 0f, 1f).normalized;
+            var treeOrder = SpriteWorldSorting.Calculate(new Vector3(5f, 0f, 5f), forward, SpriteSortCategory.WorldObject, 0);
+            var besideOrder = SpriteWorldSorting.Calculate(new Vector3(6f, 0f, 4f), forward, SpriteSortCategory.WorldObject, 1);
+            Assert.AreNotEqual(treeOrder, besideOrder);
+            Assert.AreEqual(besideOrder, SpriteWorldSorting.Calculate(new Vector3(6f, 0f, 4f), forward, SpriteSortCategory.WorldObject, 1));
+        }
+
+        [Test]
+        public void RequiredVisualsUseExplicitGroundAnchorRoles()
+        {
+            Assert.AreEqual(GroundAnchorRole.PlayerFeet, SpriteGroundAnchor.RoleFor(VisualAssetKey.PlayerCharacter));
+            Assert.AreEqual(GroundAnchorRole.PalmBase, SpriteGroundAnchor.RoleFor(VisualAssetKey.ENV_PALM_A));
+            Assert.AreEqual(GroundAnchorRole.TreeBase, SpriteGroundAnchor.RoleFor(VisualAssetKey.ENV_TREE_A));
+            Assert.AreEqual(GroundAnchorRole.BuildingBase, SpriteGroundAnchor.RoleFor(VisualAssetKey.HouseLevel1Default));
+            Assert.AreEqual(GroundAnchorRole.ShipwreckContact, SpriteGroundAnchor.RoleFor(VisualAssetKey.ENV_SHIPWRECK));
+        }
+
+        [TestCase(VisualAssetKey.ENV_PALM_A, GroundAnchorRole.PalmBase)]
+        [TestCase(VisualAssetKey.ENV_TREE_A, GroundAnchorRole.TreeBase)]
+        [TestCase(VisualAssetKey.HouseLevel1Default, GroundAnchorRole.BuildingBase)]
+        [TestCase(VisualAssetKey.ENV_SHIPWRECK, GroundAnchorRole.ShipwreckContact)]
+        public void GroundAnchorUsesAuthoredContactTransform(VisualAssetKey key, GroundAnchorRole expectedRole)
+        {
+            var obj = new GameObject("Ground Contact"); obj.transform.position = new Vector3(3f, 1.25f, 7f);
+            try
+            {
+                var anchor = obj.AddComponent<SpriteGroundAnchor>(); anchor.Initialize(key);
+                Assert.AreEqual(expectedRole, anchor.Role); Assert.AreEqual(obj.transform.position, anchor.WorldPosition);
+            }
+            finally { Object.DestroyImmediate(obj); }
+        }
+
+        [Test]
+        public void PresentationScaleProfileKeepsNormalVegetationWithinLockedLimits()
+        {
+            var profile = PresentationScaleProfile.CreateDefault();
+            try
+            {
+                AssertScaleWithin(profile, VisualAssetKey.ENV_PALM_A, 1.6f, 2.2f);
+                AssertScaleWithin(profile, VisualAssetKey.ENV_TREE_A, 1.5f, 2f);
+                AssertScaleWithin(profile, VisualAssetKey.ENV_BUSH_A, 0.4f, 0.7f);
+                AssertScaleWithin(profile, VisualAssetKey.ENV_GRASS_A, 0.15f, 0.35f);
+            }
+            finally { Object.DestroyImmediate(profile); }
+        }
+
+        [Test]
+        public void ProductionEnvironmentSpriteOverridesTemporarySlot()
+        {
+            var texture = new Texture2D(4, 4); var sprite = Sprite.Create(texture, new Rect(0f, 0f, 4f, 4f), new Vector2(0.5f, 0f));
+            var definition = ScriptableObject.CreateInstance<SpriteVisualDefinition>(); var catalog = ScriptableObject.CreateInstance<VisualAssetCatalog>(); var parent = new GameObject("Production Palm Slot");
+            try
+            {
+                var directions = new SpriteDirectionSet();
+                SetField(directions, "sprites", new List<DirectionalSprite> { new DirectionalSprite { direction = SpriteDirection.S, sprite = sprite } });
+                SetField(definition, "assetKey", VisualAssetKey.ENV_PALM_A); SetField(definition, "idle", directions); SetField(definition, "worldSize", new Vector2(3f, 4.75f));
+                SetField(catalog, "spriteVisuals", new List<SpriteVisualDefinition> { definition });
+                var fallbackCalled = false;
+                var visual = new VisualAssetResolver(catalog, PlatformProfile.WebMobile()).CreatePresentation(VisualAssetKey.ENV_PALM_A, parent.transform, "palm_slot", p => { fallbackCalled = true; return null; });
+                Assert.IsNotNull(visual); Assert.IsFalse(fallbackCalled); Assert.AreSame(sprite, visual.GetComponent<SpriteRenderer>().sprite);
+            }
+            finally { Object.DestroyImmediate(parent); Object.DestroyImmediate(catalog); Object.DestroyImmediate(definition); Object.DestroyImmediate(sprite); Object.DestroyImmediate(texture); }
+        }
+
+        static void AssertScaleWithin(PresentationScaleProfile profile, VisualAssetKey key, float min, float max)
+        {
+            var ratio = profile.WorldSize(key).y / PresentationScaleProfile.PlayerWorldHeight;
+            Assert.That(ratio, Is.InRange(min, max), key.ToString());
         }
 
         [Test]

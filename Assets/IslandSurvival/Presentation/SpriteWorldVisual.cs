@@ -11,6 +11,7 @@ namespace IslandSurvival.Presentation
         [SerializeField] bool dynamicVisual;
         SpriteRenderer spriteRenderer;
         SortingGroup sortingGroup;
+        SpriteGroundAnchor groundAnchor;
         Transform cameraTransform;
         SpriteDirectionSet directionSet;
         VisualAssetKey assetKey;
@@ -37,6 +38,9 @@ namespace IslandSurvival.Presentation
             spriteRenderer.sprite = sprite;
             sortingGroup = GetComponent<SortingGroup>();
             if (sortingGroup == null) sortingGroup = gameObject.AddComponent<SortingGroup>();
+            groundAnchor = GetComponent<SpriteGroundAnchor>();
+            if (groundAnchor == null) groundAnchor = gameObject.AddComponent<SpriteGroundAnchor>();
+            groundAnchor.Initialize(key);
             if (sprite != null)
             {
                 ApplyWorldScale();
@@ -99,7 +103,10 @@ namespace IslandSurvival.Presentation
             ApplyWorldScale();
             transform.rotation = cameraTransform.rotation;
             if (sortingGroup == null) sortingGroup = GetComponent<SortingGroup>();
-            if (sortingGroup != null) sortingGroup.sortingOrder = SpriteWorldSorting.Calculate(transform.position, cameraTransform.forward, category);
+            if (sortingGroup != null) sortingGroup.sortingOrder = SpriteWorldSorting.Calculate(
+                groundAnchor != null ? groundAnchor.WorldPosition : transform.position,
+                cameraTransform.forward, category,
+                groundAnchor != null && groundAnchor.Role == GroundAnchorRole.PlayerFeet ? 1 : 0);
             if (!dynamicVisual && !force) enabled = false;
         }
 
@@ -120,11 +127,17 @@ namespace IslandSurvival.Presentation
         void OnGUI()
         {
             if (assetKey != VisualAssetKey.PlayerCharacter) return;
+            if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.F7)
+            {
+                SortingAnchorDebugOverlay.Visible = !SortingAnchorDebugOverlay.Visible;
+                Event.current.Use();
+            }
             if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.F8)
             {
                 showDirectionDebug = !showDirectionDebug;
                 Event.current.Use();
             }
+            SortingAnchorDebugOverlay.Draw(UnityEngine.Camera.main, transform.position);
             if (!showDirectionDebug) return;
             var spriteName = spriteRenderer != null && spriteRenderer.sprite != null ? spriteRenderer.sprite.name : "<none>";
             GUI.Box(new Rect(12f, 12f, 430f, 92f),

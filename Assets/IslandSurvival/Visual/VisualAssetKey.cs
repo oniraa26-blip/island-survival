@@ -45,7 +45,17 @@ namespace IslandSurvival.Visual
         FarmSoilWet,
         CropTestStage1,
         CropTestStage2,
-        CropTestStage3
+        CropTestStage3,
+        ENV_PALM_A, ENV_PALM_B, ENV_PALM_C,
+        ENV_TREE_A, ENV_TREE_B,
+        ENV_BUSH_A, ENV_BUSH_B,
+        ENV_GRASS_A, ENV_GRASS_B, ENV_GRASS_C,
+        ENV_FLOWER_A, ENV_FLOWER_B,
+        ENV_ROCK_SMALL_A, ENV_ROCK_SMALL_B, ENV_ROCK_MEDIUM_A, ENV_ROCK_LARGE_A,
+        ENV_SHIPWRECK,
+        PROP_CRATE, PROP_BARREL, PROP_DRIFTWOOD,
+        GROUND_WET_SAND, GROUND_DRY_SAND, GROUND_DIRT, GROUND_GRASS,
+        WATER_DEEP, WATER_SHALLOW, WATER_FOAM
     }
 
     public enum VisualMaterialKey

@@ -1,4 +1,5 @@
 using IslandSurvival.Platform;
+using IslandSurvival.Presentation;
 using IslandSurvival.Visual;
 using IslandSurvival.World;
 using NUnit.Framework;
@@ -45,6 +46,17 @@ namespace IslandSurvival.Tests
             Assert.IsNotNull(Resources.Load<Shader>("Visual/Shaders/StylizedSurface"));
             Assert.IsNotNull(Resources.Load<Shader>("Visual/Shaders/StylizedTerrain"));
             Assert.IsNotNull(Resources.Load<Shader>("Visual/Shaders/TropicalWater"));
+        }
+
+        [Test]
+        public void TerrainAndWaterExposeReplaceablePresentationLayers()
+        {
+            CollectionAssert.AreEquivalent(new[]
+            {
+                "WATER_DEEP", "WATER_SHALLOW", "WATER_FOAM",
+                "GROUND_WET_SAND", "GROUND_DRY_SAND", "GROUND_DIRT", "GROUND_GRASS",
+                "TRANSITION_SAND_GRASS", "TRANSITION_DIRT_GRASS"
+            }, System.Enum.GetNames(typeof(PresentationLayerKey)));
         }
     }
 }

@@ -13,9 +13,14 @@ namespace IslandSurvival.Presentation
         {
             if (fallbackVisual == null || fallbackVisual.GetComponentInChildren<SpriteWorldVisual>(true) != null) return;
             var renderers = fallbackVisual.GetComponentsInChildren<Renderer>(true);
+            // Gameplay factories place their visual root at the authored ground/water contact.
+            // Renderer bounds include canopy, tilted planks and other artwork and must never
+            // drive the sorting anchor.
             var groundWorldY = fallbackVisual.transform.position.y;
-            if (renderers.Length > 0)
+            if (key == VisualAssetKey.PlayerCharacter && renderers.Length > 0)
             {
+                // The legacy capsule fallback is centered above the gameplay root; its lower
+                // bound is the verified feet contact used while production character art is absent.
                 groundWorldY = renderers[0].bounds.min.y;
                 for (var i = 1; i < renderers.Length; i++) groundWorldY = Mathf.Min(groundWorldY, renderers[i].bounds.min.y);
             }
@@ -26,7 +31,7 @@ namespace IslandSurvival.Presentation
             root.transform.SetParent(fallbackVisual.transform, false);
             root.transform.position = new Vector3(fallbackVisual.transform.position.x, groundWorldY, fallbackVisual.transform.position.z);
             var worldVisual = root.AddComponent<SpriteWorldVisual>();
-            worldVisual.Initialize(GetSprite(key, spec.color), spec.size, key == VisualAssetKey.PlayerCharacter ? SpriteSortCategory.Character : SpriteSortCategory.WorldObject, key == VisualAssetKey.PlayerCharacter, key);
+            worldVisual.Initialize(GetSprite(key, spec.color), spec.size, SpriteSortCategory.WorldObject, key == VisualAssetKey.PlayerCharacter, key);
 
             if (!spec.shadow) return;
             var shadow = new GameObject("Blob Shadow");
@@ -82,26 +87,42 @@ namespace IslandSurvival.Presentation
 
         static VisualSpec GetSpec(VisualAssetKey key)
         {
+            var size = PresentationScaleProfile.RuntimeDefault.WorldSize(key);
             switch (key)
             {
-                case VisualAssetKey.PlayerCharacter: return new VisualSpec(new Vector2(1.25f, 2.5f), new Color(0.96f, 0.43f, 0.13f), true);
+                case VisualAssetKey.PlayerCharacter: return new VisualSpec(size, new Color(0.96f, 0.43f, 0.13f), true);
                 case VisualAssetKey.PalmTree:
                 case VisualAssetKey.PalmA:
                 case VisualAssetKey.PalmB:
-                case VisualAssetKey.PalmC: return new VisualSpec(new Vector2(4.5f, 7.5f), new Color(0.12f, 0.55f, 0.22f), true);
+                case VisualAssetKey.PalmC:
+                case VisualAssetKey.ENV_PALM_A:
+                case VisualAssetKey.ENV_PALM_B:
+                case VisualAssetKey.ENV_PALM_C: return new VisualSpec(size, new Color(0.12f, 0.55f, 0.22f), true);
                 case VisualAssetKey.TropicalTree:
-                case VisualAssetKey.TropicalTreeA: return new VisualSpec(new Vector2(4.8f, 6.2f), new Color(0.08f, 0.42f, 0.18f), true);
+                case VisualAssetKey.TropicalTreeA:
+                case VisualAssetKey.ENV_TREE_A:
+                case VisualAssetKey.ENV_TREE_B: return new VisualSpec(size, new Color(0.08f, 0.42f, 0.18f), true);
                 case VisualAssetKey.Bush:
-                case VisualAssetKey.BushA: return new VisualSpec(new Vector2(2.2f, 1.6f), new Color(0.18f, 0.62f, 0.25f), true);
+                case VisualAssetKey.BushA:
+                case VisualAssetKey.ENV_BUSH_A:
+                case VisualAssetKey.ENV_BUSH_B: return new VisualSpec(size, new Color(0.18f, 0.62f, 0.25f), true);
                 case VisualAssetKey.GrassCluster:
-                case VisualAssetKey.GrassA: return new VisualSpec(new Vector2(1.1f, 0.8f), new Color(0.32f, 0.7f, 0.28f), false);
+                case VisualAssetKey.GrassA:
+                case VisualAssetKey.ENV_GRASS_A:
+                case VisualAssetKey.ENV_GRASS_B:
+                case VisualAssetKey.ENV_GRASS_C: return new VisualSpec(size, new Color(0.32f, 0.7f, 0.28f), false);
                 case VisualAssetKey.Rock:
-                case VisualAssetKey.RockMedium: return new VisualSpec(new Vector2(2.1f, 1.35f), new Color(0.48f, 0.5f, 0.45f), true);
-                case VisualAssetKey.RockSmall: return new VisualSpec(new Vector2(0.9f, 0.65f), new Color(0.48f, 0.5f, 0.45f), true);
+                case VisualAssetKey.RockMedium:
+                case VisualAssetKey.ENV_ROCK_MEDIUM_A: return new VisualSpec(size, new Color(0.48f, 0.5f, 0.45f), true);
+                case VisualAssetKey.RockSmall:
+                case VisualAssetKey.ENV_ROCK_SMALL_A:
+                case VisualAssetKey.ENV_ROCK_SMALL_B: return new VisualSpec(size, new Color(0.48f, 0.5f, 0.45f), true);
                 case VisualAssetKey.RockLarge:
-                case VisualAssetKey.RockCoastal: return new VisualSpec(new Vector2(4.2f, 3.2f), new Color(0.48f, 0.5f, 0.45f), true);
-                case VisualAssetKey.Shipwreck: return new VisualSpec(new Vector2(8f, 5f), new Color(0.45f, 0.24f, 0.1f), true);
-                default: return new VisualSpec(new Vector2(0.8f, 0.8f), new Color(0.94f, 0.75f, 0.28f), true);
+                case VisualAssetKey.RockCoastal:
+                case VisualAssetKey.ENV_ROCK_LARGE_A: return new VisualSpec(size, new Color(0.48f, 0.5f, 0.45f), true);
+                case VisualAssetKey.Shipwreck:
+                case VisualAssetKey.ENV_SHIPWRECK: return new VisualSpec(size, new Color(0.45f, 0.24f, 0.1f), true);
+                default: return new VisualSpec(size, new Color(0.94f, 0.75f, 0.28f), true);
             }
         }
 

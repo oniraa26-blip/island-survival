@@ -38,7 +38,7 @@ namespace IslandSurvival.Visual
                 visual.transform.SetParent(parent, false);
                 var worldVisual = visual.AddComponent<SpriteWorldVisual>();
                 worldVisual.Initialize(spriteDefinition, authoredSprite,
-                    key == VisualAssetKey.PlayerCharacter ? SpriteSortCategory.Character : SpriteSortCategory.WorldObject,
+                    SpriteSortCategory.WorldObject,
                     key == VisualAssetKey.PlayerCharacter);
                 var authoredMarker = visual.AddComponent<VisualPrefabInstance>();
                 authoredMarker.Initialize(key, gameplayIdentity, false);
